@@ -24,7 +24,6 @@ RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
 RUN chmod +x /setup.sh
 
-
 # Run start script
 CMD ["bash", "/setup.sh"]
 
