@@ -7,17 +7,16 @@
 
     <title>Camagru</title>
 
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="assets/css/style.css" />
     <!-- <script src="https://cdn.tailwindcss.com"></script> --> 
   </head>
-
+  
   <body>
     <header>
       <h1>Camagru</h1>
     </header>
     <div id="root"></div>
-
-    <script src="script.js"></script>
+    <script src="assets/js/app.js"></script>
 
     <footer>
       <div>

@@ -12,4 +12,4 @@
 - Create a docker compose file
 
 # Dependencies
-- Docker
+- Docker-compose
