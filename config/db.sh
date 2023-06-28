@@ -26,5 +26,3 @@ EOF
   chmod -R 777 /var/data/
   echo "SQLite database created."
 fi
-
-apache2-foreground

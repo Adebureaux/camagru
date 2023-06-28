@@ -2,29 +2,38 @@ FROM php:7.4-apache
 
 # Install required packages
 RUN apt-get update \
-    && apt-get install -y libsqlite3-dev sqlite3
+    && apt-get install -y libsqlite3-dev sqlite3 ufw
 
 # Install required extensions
 RUN docker-php-ext-install pdo pdo_sqlite
 
-# Set the working directory
-WORKDIR /var/www/html
+WORKDIR /root
 
-# Copy the application files and the configuration file to the container
+# Copy the app and the configuration files to the container
 COPY app/ /var/www/html
-COPY config/setup.sh /setup.sh
+COPY config/db.sh .
+COPY config/ssl.sh .
 
 # Configure Apache
 RUN a2enmod rewrite
+RUN a2enmod headers
+RUN a2enmod ssl
 COPY config/apache-config.conf /etc/apache2/sites-available/000-default.conf
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
-RUN a2enmod headers
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
 RUN chmod -R 755 /var/www/html
-RUN chmod +x /setup.sh
+RUN chmod +x db.sh
+RUN chmod +x ssl.sh
 
-# Run start script
-CMD ["bash", "/setup.sh"]
+# Run the configuration scripts
+# RUN bash ssl.sh
+RUN bash db.sh
+
+# Set the working directory
+WORKDIR /var/www/html
+
+# Run Apache
+CMD ["apache2-foreground"]
 

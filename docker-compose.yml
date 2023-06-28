@@ -13,6 +13,7 @@ services:
     networks:
       - camagru
     restart: on-failure
+    privileged: true
 
   db:
     image: keinos/sqlite3:latest

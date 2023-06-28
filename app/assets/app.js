@@ -4,7 +4,7 @@ class Model {
     // Add properties relevant to the model
   }
 
-  registerUser(username, email, password) {
+  register(username, email, password) {
     console.log(username, email, password);
     fetch('auth/register.php', {
       method: 'POST',
@@ -70,7 +70,18 @@ class View {
   }
 
   displayMain() {
-    return null;
+    this.main = this.createElement('main');
+    this.app.append(this.main);
+  }
+
+  register() {
+    this.main.innerHTML = '';
+    const username = this.createElement('input');
+    username.placeholder = 'Type your username...';
+    console.log(username);
+    this.main.append(username);
+
+    return { username: username, email: "pass", password: "pass" };
   }
 
   createElement(tag, className) {
@@ -99,12 +110,16 @@ class Controller {
   }
 
   register() {
-    const username = prompt('Enter your desired username:');
-    const email = prompt('Enter your email:');
-    const password = prompt('Enter your password:');
+    // const username = prompt('Enter your desired username:');
+    // const email = prompt('Enter your email:');
+    // const password = prompt('Enter your password:');
+
+    const input = this.view.register();
+
+    console.log(input);
 
     // Request the model to handle the registration
-    this.model.registerUser(username, email, password);
+    // this.model.register(input.username, input.email, input.password);
   }
 }
 
