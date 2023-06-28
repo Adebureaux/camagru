@@ -1,0 +1,64 @@
+html {
+  font-family: sans-serif;
+}
+
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color:rgb(231, 231, 231);
+}
+
+body {
+  margin: 0;
+}
+
+button {
+  display: inline-block;
+  cursor: pointer;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #007bff;
+  color: white;
+}
+
+button:hover {
+  background: #238cfc;
+}
+
+.auth-buttons button {
+  margin: 0 .5rem;
+  padding: .5rem 1rem;
+  white-space: nowrap;
+}
+
+.auth-buttons {
+  display: flex;
+  align-items: center;
+}
+
+
+@media only screen and (max-width: 767px) {
+  /* Styles for mobile devices */
+  header {
+    padding: 8px;
+  }
+
+  h1 {
+    font-size: 25px;
+  }
+
+  .auth-buttons button {
+    margin: .1 .2rem;
+    padding: .2 .4rem;
+    font-size: 14px;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  /* Styles for larger screens */
+}
+
+

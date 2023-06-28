@@ -1,3 +1,7 @@
+<?php
+require_once 'db_connection.php';
+?>
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,24 +11,11 @@
 
     <title>Camagru</title>
 
-    <link rel="stylesheet" href="assets/css/style.css" />
-    <!-- <script src="https://cdn.tailwindcss.com"></script> --> 
+    <link rel="stylesheet" href="assets/style.css" />
   </head>
   
   <body>
-    <header>
-      <h1>Camagru</h1>
-    </header>
     <div id="root"></div>
-    <script src="assets/js/app.js"></script>
-
-    <footer>
-      <div>
-        <img width="100%" src="https://cdn.shopify.com/s/files/1/0563/5778/1702/files/ROCCAT_AIMO-3DLighting_Wallpaper_3840x1080_DualHD_scaled50.jpg?v=1666793579">
-      </div>
-      <div>
-        <img width="100%" src="https://cdn.shopify.com/s/files/1/0563/5778/1702/files/ROCCAT_AIMO-3DLighting_Wallpaper_3840x1080_DualHD_scaled50.jpg?v=1666793579">
-      </div>
-    </footer>
+    <script src="assets/app.js"></script>
   </body>
 </html>

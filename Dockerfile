@@ -18,6 +18,7 @@ COPY config/setup.sh /setup.sh
 RUN a2enmod rewrite
 COPY config/apache-config.conf /etc/apache2/sites-available/000-default.conf
 RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+RUN a2enmod headers
 
 # Set permissions
 RUN chown -R www-data:www-data /var/www/html
