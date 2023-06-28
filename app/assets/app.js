@@ -5,7 +5,6 @@ class Model {
   }
 
   register(username, email, password) {
-    console.log(username, email, password);
     fetch('auth/register.php', {
       method: 'POST',
       headers: {
@@ -20,18 +19,12 @@ class Model {
     .then(response => response.json())
     .then(data => {
       console.log(data);
-      // Handle the response from the server
-      if (data.success) {
-        // Registration successful
+      if (data.success)
         console.log('Registration successful!');
-      } 
-      else {
-        // Registration failed
+      else
         console.log('Registration failed. Error:', data.error);
-      }
     })
     .catch(error => {
-      // Handle any errors that occurred during the request
       console.error('Error:', error);
     });
   }
@@ -41,47 +34,40 @@ class Model {
 class View {
   constructor() {
     this.app = this.getElement('#root');
-    this.displayHeader();
-    this.displayMain();
+    this.form = this.createElement('form');
+    this.displayHeaderButtons();
   }
 
-  displayHeader() {
-    const header = this.createElement('header');
-
-    const h1 = this.createElement('h1');
-    h1.textContent = 'Camagru';
-
-    const title = this.createElement('div');
-    title.append(h1);
-
+  displayHeaderButtons() {
+    this.header = this.getElement('#header');
     this.loginButton = this.createElement('button');
     this.loginButton.textContent = 'Login';
-
     this.signInButton = this.createElement('button');
     this.signInButton.textContent = 'Sign In';
-
     const headerButtons = this.createElement('div', 'auth-buttons');
     headerButtons.append(this.loginButton, this.signInButton);
-
-    header.append(title);
     header.append(headerButtons);
-
-    this.app.append(header);
   }
 
-  displayMain() {
-    this.main = this.createElement('main');
-    this.app.append(this.main);
+  refreshRoot() {
+    this.app.innerHTML = '';
   }
 
   register() {
-    this.main.innerHTML = '';
-    const username = this.createElement('input');
-    username.placeholder = 'Type your username...';
-    console.log(username);
-    this.main.append(username);
-
-    return { username: username, email: "pass", password: "pass" };
+    this.refreshRoot();
+    this.form.innerHTML = '';
+    this.username = this.createElementInDiv('input');
+    this.username.placeholder = 'Username';
+    this.email = this.createElementInDiv('input');
+    this.email.placeholder = 'Email';
+    this.password = this.createElementInDiv('input');
+    this.password.placeholder = 'Password';
+    this.password.type = 'password';
+    this.submitButton = this.createElement('button');
+    this.submitButton.textContent = 'Create'
+    this.submitButton.type = 'submit';
+    this.form.append(this.username, this.email, this.password, this.submitButton);
+    this.app.append(this.form);
   }
 
   createElement(tag, className) {
@@ -91,6 +77,15 @@ class View {
       element.classList.add(className);
 
     return element;
+  }
+
+  createElementInDiv(tag, className) {
+    const div = document.createElement('div');
+    const element = document.createElement(tag);
+    div.append(element);
+    if (className)
+      element.classList.add(className);
+    return div;
   }
 
   getElement(selector) {
@@ -106,20 +101,17 @@ class Controller {
     this.model = model;
     this.view = view;
 
-    this.view.signInButton.addEventListener('click', this.register.bind(this));
+    this.view.signInButton.addEventListener('click', this.registerView.bind(this));
+    this.view.form.addEventListener('submit', this.registerModel.bind(this));
   }
 
-  register() {
-    // const username = prompt('Enter your desired username:');
-    // const email = prompt('Enter your email:');
-    // const password = prompt('Enter your password:');
+  registerView() {
+    this.view.register();
+  }
 
-    const input = this.view.register();
-
-    console.log(input);
-
-    // Request the model to handle the registration
-    // this.model.register(input.username, input.email, input.password);
+  registerModel(event) {
+    event.preventDefault();
+    this.model.register(this.view.username.querySelector('input').value, this.view.email.querySelector('input').value, this.view.password.querySelector('input').value);
   }
 }
 

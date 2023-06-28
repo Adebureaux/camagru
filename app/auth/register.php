@@ -56,14 +56,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
 
-  // Generate activation token (optional)
   $activationToken = bin2hex(random_bytes(32));
+  $resetToken = bin2hex(random_bytes(32));
 
-  // Insert the new user into the database
-  $stmt = $pdo->prepare("INSERT INTO users (username, email, password, activation_token) VALUES (:username, :email, :password, :activation_token)");
-  $stmt->execute(['username' => $username, 'email' => $email, 'password' => $hashedPassword, 'activation_token' => $activationToken]);
+  $stmt = $pdo->prepare("INSERT INTO users (username, email, password, activation_token, reset_token) VALUES (:username, :email, :password, :activation_token, :reset_token)");
+  $stmt->execute(['username' => $username, 'email' => $email, 'password' => $hashedPassword, 'activation_token' => $activationToken, 'reset_token' => $resetToken]);
 
-  // Prepare the response data
   $response = array(
     'success' => true,
     'message' => 'Registration successful'

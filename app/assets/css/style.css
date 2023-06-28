@@ -39,6 +39,12 @@ button:hover {
   align-items: center;
 }
 
+.main {
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
 
 @media only screen and (max-width: 767px) {
   /* Styles for mobile devices */
@@ -55,10 +61,11 @@ button:hover {
     padding: .2 .4rem;
     font-size: 14px;
   }
-}
 
-@media only screen and (min-width: 768px) {
-  /* Styles for larger screens */
+  .footer-menu ul {
+    display: flex;
+    margin-top: 10px;
+    margin-bottom: 20px;
+  }
 }
-
 
