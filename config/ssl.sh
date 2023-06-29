@@ -2,8 +2,8 @@
 
 SSL_DIR="/root/.ssl"
 
-ufw allow 80/tcp
-ufw allow 443/tcp
+ufw allow "WWW Full"
+ufw enable
 
 if [ ! -d "$SSL_DIR" ]; then
   echo "Generate SSL certificate..."

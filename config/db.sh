@@ -16,13 +16,10 @@ if [ ! -f "$DATABASE_FILE" ]; then
       password VARCHAR(255) NOT NULL,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
       notification TINYINT(1) NOT NULL DEFAULT 1,
+      verified TINYINT(1) NOT NULL DEFAULT 0,
       activation_token VARCHAR(255),
       reset_token VARCHAR(255)
     );
-
-    INSERT INTO users (username, email, password, activation_token, reset_token)
-    VALUES ('test', 'test@example.com', 'test', 'activation_token_here', 'reset_token_here');
 EOF
-  chmod -R 777 /var/data/
   echo "SQLite database created."
 fi

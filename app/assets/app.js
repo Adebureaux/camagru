@@ -1,3 +1,5 @@
+import page from "//unpkg.com/page/page.mjs";
+
 // Model
 class Model {
   constructor() {
@@ -34,18 +36,27 @@ class Model {
 class View {
   constructor() {
     this.app = this.getElement('#root');
-    this.form = this.createElement('form');
+    this.signInForm = this.createElement('form');
     this.displayHeaderButtons();
   }
 
   displayHeaderButtons() {
-    this.header = this.getElement('#header');
-    this.loginButton = this.createElement('button');
-    this.loginButton.textContent = 'Login';
-    this.signInButton = this.createElement('button');
-    this.signInButton.textContent = 'Sign In';
+    const header = this.getElement('#header');
+
+    const loginLink = this.createElement('a');
+    const loginButton = this.createElement('button');
+    loginLink.href = '/login';
+    loginButton.textContent = 'Login';
+    loginLink.appendChild(loginButton);
+
+    const signInLink = this.createElement('a');
+    const signInButton = this.createElement('button');    
+    signInLink.href = '/signin';
+    signInButton.textContent = 'Sign In';
+    signInLink.appendChild(signInButton);
+
     const headerButtons = this.createElement('div', 'auth-buttons');
-    headerButtons.append(this.loginButton, this.signInButton);
+    headerButtons.append(loginLink, signInLink);
     header.append(headerButtons);
   }
 
@@ -53,22 +64,31 @@ class View {
     this.app.innerHTML = '';
   }
 
-  register() {
+  displaySignInPagePage() {
     this.refreshRoot();
-    this.form.innerHTML = '';
+    this.signInForm.innerHTML = '';
+
+    const title = this.createElementInDiv('h3');
+    title.firstChild.textContent = 'Create your account';
+
     this.username = this.createElementInDiv('input');
-    this.username.placeholder = 'Username';
+    this.username.firstChild.placeholder = 'Username';
     this.email = this.createElementInDiv('input');
-    this.email.placeholder = 'Email';
+    this.email.firstChild.placeholder = 'Email';
     this.password = this.createElementInDiv('input');
-    this.password.placeholder = 'Password';
+    this.password.firstChild.placeholder = 'Password';
     this.password.type = 'password';
-    this.submitButton = this.createElement('button');
+    this.submitButton = this.createElement('button', 'sign-in-submit-btn');
     this.submitButton.textContent = 'Create'
     this.submitButton.type = 'submit';
-    this.form.append(this.username, this.email, this.password, this.submitButton);
-    this.app.append(this.form);
+    this.signInForm.append(title, this.username, this.email, this.password, this.submitButton);
+    this.app.append(this.signInForm);
   }
+
+    displayHomePage() {
+      this.refreshRoot();
+    }
+    
 
   createElement(tag, className) {
     const element = document.createElement(tag);
@@ -101,17 +121,25 @@ class Controller {
     this.model = model;
     this.view = view;
 
-    this.view.signInButton.addEventListener('click', this.registerView.bind(this));
-    this.view.form.addEventListener('submit', this.registerModel.bind(this));
+    this.view.signInForm.addEventListener('submit', this.registerModel.bind(this));
+
+    page('/', this.homePage.bind(this));
+    page('/login', this.homePage.bind(this));
+    page('/signin', this.signInPage.bind(this));
+    page.start();
   }
 
-  registerView() {
-    this.view.register();
+  homePage() {
+    this.view.displayHomePage();
+  }
+
+  signInPage() {
+    this.view.displaySignInPagePage();
   }
 
   registerModel(event) {
     event.preventDefault();
-    this.model.register(this.view.username.querySelector('input').value, this.view.email.querySelector('input').value, this.view.password.querySelector('input').value);
+    this.model.register(this.view.username.firstChild.value, this.view.email.firstChild.value, this.view.password.firstChild.value);
   }
 }
 
