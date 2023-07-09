@@ -21,5 +21,6 @@ if [ ! -f "$DATABASE_FILE" ]; then
       reset_token VARCHAR(255)
     );
 EOF
+  chmod 777 $DATABASE_FILE
   echo "SQLite database created."
 fi

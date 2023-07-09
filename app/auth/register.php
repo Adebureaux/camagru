@@ -4,10 +4,9 @@ require_once '../db_connection.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Retrieve the raw request body
   $request_body = file_get_contents('php://input');
-
   // Decode the JSON data
   $data = json_decode($request_body);
-
+  
   // Check if the JSON decoding was successful
   if (!$data) {
     $response = array(
@@ -17,14 +16,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode($response);
     exit;
   }
-
+  
   // Retrieve form data from the JSON object
   $username = $data->username;
   $email = $data->email;
   $password = $data->password;
-
+  
   error_log('Fields not filled: username=' . $username . ', email=' . $email . ', password=' . $password); // Debug statement
-
+  
   // Perform form validation
   if (empty($username) || empty($email) || empty($password)) {
     $response = array(
@@ -42,15 +41,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Hash the password
   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-  // Check if the username or email is already taken
-  $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username OR email = :email");
-  $stmt->execute(['username' => $username, 'email' => $email]);
+  $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
+  $stmt->execute(['username' => $username]);
   $count = $stmt->fetchColumn();
-
+  
   if ($count > 0) {
     $response = array(
       'success' => false,
-      'error' => 'Username or email is already taken'
+      'error' => 'Username is already taken'
+    );
+    echo json_encode($response);
+    exit;
+  }
+  $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE email = :email");
+  $stmt->execute(['email' => $email]);
+  $count = $stmt->fetchColumn();
+  if ($count > 0) {
+    $response = array(
+      'success' => false,
+      'error' => 'Email is already taken'
     );
     echo json_encode($response);
     exit;
@@ -60,15 +69,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $resetToken = bin2hex(random_bytes(32));
 
   $stmt = $pdo->prepare("INSERT INTO users (username, email, password, activation_token, reset_token) VALUES (:username, :email, :password, :activation_token, :reset_token)");
-  $stmt->execute(['username' => $username, 'email' => $email, 'password' => $hashedPassword, 'activation_token' => $activationToken, 'reset_token' => $resetToken]);
+  $stmt->execute([
+    'username' => $username,
+    'email' => $email,
+    'password' => password_hash($password, PASSWORD_DEFAULT),
+    'activation_token' => $activationToken,
+    'reset_token' => $resetToken,
+  ]);
 
-  $response = array(
-    'success' => true,
-    'message' => 'Registration successful'
-  );
+  // Send the activation email
+  $subject = 'Account Activation';
+  $message = 'Thank you for registering! Please click the following link to activate your account: ' . generateActivationLink($activationToken);
+  $headers = 'From: camagruft@gmail.com';
+  $isEmailSent = mail($email, $subject, $message, $headers);
+  error_log('isEmailSent=' . $isEmailSent); // Debug statement
 
+  if ($isEmailSent) {
+    $response = array(
+      'success' => true,
+      'message' => 'Registration successful. An activation email has been sent to your email address.'
+    );
+  }
+  else {
+    $response = array(
+      'success' => false,
+      'error' => 'Failed to send activation email. Please contact support.'
+    );
+  }
   header('Content-Type: application/json');
   echo json_encode($response);
   exit;
+}
+
+function generateActivationLink($activationToken) {
+  $baseUrl = 'https://localhost';
+  return $baseUrl . '/activate.php?token=' . $activationToken;
 }
 ?>

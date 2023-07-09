@@ -12,4 +12,11 @@
 - Create a docker compose file
 
 # Dependencies
+- Docker
 - Docker-compose
+
+# ENV
+- Create a .env file, this must contains:
+## To enable mail system
+SMT_SERVER="[your.smtp.com]:port"
+SMTP_ACCESS="your_mail@email.com:yourPassWord"
