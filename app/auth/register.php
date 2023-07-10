@@ -22,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $email = $data->email;
   $password = $data->password;
   
-  error_log('Fields not filled: username=' . $username . ', email=' . $email . ', password=' . $password); // Debug statement
+  error_log('username=' . $username . ', email=' . $email . ', password=' . $password); // Debug statement
   
   // Perform form validation
   if (empty($username) || empty($email) || empty($password)) {
@@ -102,6 +102,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 function generateActivationLink($activationToken) {
   $baseUrl = 'https://localhost';
-  return $baseUrl . '/activate.php?token=' . $activationToken;
+  return $baseUrl . '/activate?token=' . $activationToken;
 }
 ?>
