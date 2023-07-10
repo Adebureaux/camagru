@@ -18,18 +18,15 @@ RUN docker-php-ext-install pdo pdo_sqlite
 
 WORKDIR /root
 
-# Copy the app and the configuration files to the container
-COPY app/ /var/www/html
+# Copy the configuration files to the container
 COPY config/db.sh .
 COPY config/mail.sh .
 COPY config/ssl.sh .
 COPY config/entrypoint.sh .
 
 # Configure Apache
-COPY config/000-default.conf /etc/apache2/sites-available/000-default.conf
-COPY config/ssl.conf /etc/apache2/sites-available/ssl-default.conf
-RUN mkdir /etc/apache2/certs
-RUN echo "ServerName localhost" >> /etc/apache2/apache2.conf
+COPY config/default.conf /etc/apache2/sites-available/000-default.conf
+COPY config/default-ssl.conf /etc/apache2/sites-available/ssl-default.conf
 RUN a2enmod headers
 RUN a2enmod rewrite
 

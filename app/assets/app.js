@@ -1,4 +1,4 @@
-import page from "//unpkg.com/page/page.mjs";
+import page from "//unpkg.com/page@1.11.6/page.mjs";
 
 // Model
 class Model {
@@ -188,6 +188,14 @@ class View {
     this.app.append(this.loginForm);
   }
 
+  displayNotFoundPage() {
+    this.refreshRoot();
+    const notFound = this.createElementInDiv('h2');
+    notFound.firstChild.textContent = 'Page not found';
+    this.loginForm.append(notFound);
+    this.app.append(this.loginForm);
+  }
+
   createElement(tag, className) {
     const element = document.createElement(tag);
 
@@ -236,6 +244,7 @@ class Controller {
     page('/', this.homePage.bind(this));
     page('/login', this.loginPage.bind(this));
     page('/signin', this.signInPage.bind(this));
+    page('*', this.notFoundPage.bind(this));
     page.start();
   }
 
@@ -250,6 +259,10 @@ class Controller {
 
   loginPage() {
     this.view.displayLoginPage();
+  }
+
+  notFoundPage() {
+    this.view.displayNotFoundPage();
   }
 
   registerModel(event) {

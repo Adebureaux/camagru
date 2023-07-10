@@ -82,7 +82,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $message = 'Thank you for registering! Please click the following link to activate your account: ' . generateActivationLink($activationToken);
   $headers = 'From: camagruft@gmail.com';
   $isEmailSent = mail($email, $subject, $message, $headers);
-  error_log('isEmailSent=' . $isEmailSent); // Debug statement
 
   if ($isEmailSent) {
     $response = array(
