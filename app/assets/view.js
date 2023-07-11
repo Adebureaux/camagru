@@ -9,14 +9,24 @@ export default class View {
     this.password.firstChild.placeholder = 'Password';
     this.password.firstChild.type = 'password';
     
-    this.signInForm = this.createElement('form');
+    this.signupForm = this.createElement('form');
     this.loginForm = this.createElement('form');
 
-    this.displayHeaderButtons();
+    this.logoutLink = this.createElement('a', 'red');
+
+    this.headerButtons = this.createElement('div', 'auth-buttons');
+
+    this.mainArea = this.createElement('div', 'main');
+
+    // this.app.append(this.mainArea);
   }
 
   refreshRoot() {
     this.app.innerHTML = '';
+  }
+
+  refreshMain() {
+    this.mainArea.innerHTML = '';
   }
 
   resetInput() {
@@ -24,24 +34,21 @@ export default class View {
     this.password.firstChild.value = '';
   }
 
-  displayHeaderButtons() {
+  displayHeaderButtons(logged) {
     const header = this.getElement('#header');
-
-    this.loginLink = this.createElement('a');
-    const loginButton = this.createElement('button');
-    this.loginLink.href = '/login';
-    loginButton.textContent = 'Login';
-    this.loginLink.appendChild(loginButton);
-
-    const signInLink = this.createElement('a');
-    const signInButton = this.createElement('button');    
-    signInLink.href = '/signin';
-    signInButton.textContent = 'Sign In';
-    signInLink.appendChild(signInButton);
-
-    const headerButtons = this.createElement('div', 'auth-buttons');
-    headerButtons.append(this.loginLink, signInLink);
-    header.append(headerButtons);
+    if (!logged) {
+      this.headerButtons.innerHTML = '';
+      const loginLink = this.createElement('a');
+      this.createLinkButton(loginLink, '/login', 'Log In');
+      const signupLink = this.createElement('a');
+      this.createLinkButton(signupLink, '/signup', 'Sign Up');
+      this.headerButtons.append(loginLink, signupLink);
+    }
+    else {
+      this.createLinkButton(this.logoutLink, '/', 'Log Out');
+      this.headerButtons.append(this.logoutLink);
+    }
+    header.append(this.headerButtons);
   }
 
   displayHomePage() {
@@ -50,9 +57,9 @@ export default class View {
     this.app.append(test);
   }
 
-  displaySignInPagePage() {
+  displaySignupPagePage() {
     this.refreshRoot();
-    this.signInForm.innerHTML = '';
+    this.signupForm.innerHTML = '';
     this.resetInput();
 
     const title = this.createElementInDiv('h3');
@@ -65,15 +72,15 @@ export default class View {
     this.submitButton.textContent = 'Create'
     this.submitButton.type = 'submit';
 
-    this.errorArea = this.createElementInDiv('p', 'response-area');
+    this.signupErrorArea = this.createElementInDiv('p', 'response-area');
 
-    this.signInForm.append(title, this.username, this.email, this.password, this.submitButton, this.errorArea);
-    this.app.append(this.signInForm);
+    this.signupForm.append(title, this.username, this.email, this.password, this.submitButton, this.signupErrorArea);
+    this.app.append(this.signupForm);
   }
 
-  displaySignInSuccess() {
+  displaySignupSuccess() {
     this.refreshRoot();
-    this.signInForm.innerHTML = '';
+    this.signupForm.innerHTML = '';
 
     const confirm = this.createElementInDiv('h3', 'response-area');
     confirm.firstChild.textContent = 'We sent you an email.';
@@ -81,15 +88,12 @@ export default class View {
     instructions.textContent = 'Please click on the provided link in the email to confirm your account.';
     confirm.appendChild(instructions);
 
-    const loginButton = this.duplicateElement(this.loginLink);
-    loginButton.firstChild.classList.add('submit-btn');
-
-    this.signInForm.append(confirm, loginButton);
-    this.app.append(this.signInForm);
+    this.signupForm.append(confirm);
+    this.app.append(this.signupForm);
   }
 
-  displaySignInError(data) {
-    this.errorArea.firstChild.textContent = data.error;
+  displaySignupError(data) {
+    this.signupErrorArea.firstChild.textContent = data.error;
   }
 
   displayLoginPage() {
@@ -98,26 +102,51 @@ export default class View {
     this.resetInput();
 
     const title = this.createElementInDiv('h3');
-    title.firstChild.textContent = 'Login';
+    title.firstChild.textContent = 'Log In';
 
     this.loginButton = this.createElement('button', 'submit-btn');
-    this.loginButton.textContent = 'Login';
+    this.loginButton.textContent = 'Log In';
     this.loginButton.type = 'submit';
 
-    this.loginForm.append(title, this.username, this.password, this.loginButton);
+    this.logInErrorErrorArea = this.createElementInDiv('p', 'response-area');
+
+    this.loginForm.append(title, this.username, this.password, this.loginButton, this.logInErrorErrorArea);
     this.app.append(this.loginForm);
+  }
+
+  displayLogInError(data) {
+    this.logInErrorErrorArea.firstChild.textContent = data.error;
   }
 
   displayNotFoundPage() {
     this.refreshRoot();
-    const notFound = this.createElementInDiv('h2');
-    notFound.firstChild.textContent = 'Page not found';
-    this.loginForm.append(notFound);
-    this.app.append(this.loginForm);
+    const notFound = this.createElement('h2');
+    notFound.textContent = 'Error 404 : Page not found ...';
+    this.mainArea.append(notFound);
+    this.app.append(this.mainArea);
   }
 
-  displayActivateRegisterPage() {
-    const a = 1
+  displayActivateRegister(data) {
+    this.refreshRoot();
+    this.refreshMain();
+    const response = this.createElement('h2');
+    response.textContent = data.message;
+
+    const loginLink = this.createElement('a');
+    this.createLinkButton(loginLink, '/login', 'Log In');
+    loginLink.firstChild.classList.add('submit-btn');
+
+    this.mainArea.append(response);
+    if (data.success)
+      this.mainArea.append(loginLink);
+    this.app.append(this.mainArea);
+  }
+
+  createLinkButton(link, href, text) {
+    const button = this.createElement('button');
+    link.href = href;
+    button.textContent = text;
+    link.appendChild(button);
   }
 
   createElement(tag, className) {
@@ -126,16 +155,6 @@ export default class View {
     if (className)
       element.classList.add(className);
 
-    return element;
-  }
-
-  duplicateElement(sourceElement, className) {
-    const element = sourceElement.cloneNode(true);
-  
-    if (className) {
-      element.classList.add(className);
-    }
-  
     return element;
   }
 

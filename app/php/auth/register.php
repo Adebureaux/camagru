@@ -2,12 +2,8 @@
 require_once '../db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-  // Retrieve the raw request body
   $request_body = file_get_contents('php://input');
-  // Decode the JSON data
   $data = json_decode($request_body);
-  
-  // Check if the JSON decoding was successful
   if (!$data) {
     $response = array(
       'success' => false,
@@ -16,35 +12,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     echo json_encode($response);
     exit;
   }
-  
-  // Retrieve form data from the JSON object
   $username = $data->username;
   $email = $data->email;
   $password = $data->password;
-  
-  error_log('username=' . $username . ', email=' . $email . ', password=' . $password); // Debug statement
-  
-  // Perform form validation
   if (empty($username) || empty($email) || empty($password)) {
     $response = array(
       'success' => false,
-      'error' => 'Please fill in all the fields'
+      'error' => 'Please fill in all the fields.'
     );
     echo json_encode($response);
     exit;
   }
-
-  // Sanitize the input
+  $checkPassword = isValidPassword($password);
+  if (!$checkPassword[0]) {
+    $response = array(
+      'success' => false,
+      'error' => 'Password does not meet the complexity requirements: ' . $checkPassword[1]
+    );
+    echo json_encode($response);
+    exit;
+  }
   $username = filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-
-  // Hash the password
   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
   $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
   $stmt->execute(['username' => $username]);
   $count = $stmt->fetchColumn();
-  
   if ($count > 0) {
     $response = array(
       'success' => false,
@@ -59,15 +52,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   if ($count > 0) {
     $response = array(
       'success' => false,
-      'error' => 'Email is already taken'
+      'error' => 'Email is already taken.'
     );
     echo json_encode($response);
     exit;
   }
-
   $activationToken = bin2hex(random_bytes(32));
   $resetToken = bin2hex(random_bytes(32));
-
   $stmt = $pdo->prepare("INSERT INTO users (username, email, password, activation_token, reset_token) VALUES (:username, :email, :password, :activation_token, :reset_token)");
   $stmt->execute([
     'username' => $username,
@@ -76,13 +67,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     'activation_token' => $activationToken,
     'reset_token' => $resetToken,
   ]);
-
-  // Send the activation email
   $subject = 'Account Activation';
   $message = 'Thank you for registering! Please click the following link to activate your account: ' . generateActivationLink($activationToken);
   $headers = 'From: camagruft@gmail.com';
   $isEmailSent = mail($email, $subject, $message, $headers);
-
   if ($isEmailSent) {
     $response = array(
       'success' => true,
@@ -97,11 +85,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   header('Content-Type: application/json');
   echo json_encode($response);
-  exit;
 }
 
 function generateActivationLink($activationToken) {
   $baseUrl = 'https://localhost';
   return $baseUrl . '/activate?token=' . $activationToken;
+}
+
+function isValidPassword($password) {
+  $minimumLength = 8;
+  $uppercaseRequired = true;
+  $lowercaseRequired = true;
+  $numberRequired = true;
+  $specialCharacterRequired = true;
+
+  if (strlen($password) < $minimumLength)
+    return [false, 'must be at least 8 characters long.'];
+  if ($uppercaseRequired && !preg_match('/[A-Z]/', $password))
+    return [false, 'must have at least 1 uppercase character.'];
+  if ($lowercaseRequired && !preg_match('/[a-z]/', $password))
+    return [false, 'must have at least 1 lowercase character.'];
+  if ($numberRequired && !preg_match('/[0-9]/', $password))
+    return [false, 'must have at least 1 number character.'];
+  if ($specialCharacterRequired && !preg_match('/[^a-zA-Z0-9]/', $password))
+    return [false, 'must have at least 1 special character.'];
+  return [true, 'successfull register.'];
 }
 ?>

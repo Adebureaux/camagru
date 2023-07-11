@@ -3,94 +3,85 @@ export default class Model {
     this.view = view;
   }
 
-  register(username, email, password) {
-    fetch('auth/register.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: username,
-        email: email,
-        password: password
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
+  async register(username, email, password) {
+    try {
+      const response = await fetch('php/auth/register.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password: password
+        })
+      });
+      
+      const data = await response.json();
+      
       if (data.success)
-        this.view.displaySignInSuccess(data);
+        this.view.displaySignupSuccess(data);
       else
-        this.view.displaySignInError(data);
-    })
-    .catch(error => {
+        this.view.displaySignupError(data);
+    } catch (error) {
       console.error('Error:', error);
-    });
+    }
   }
 
-  verifyRegister() {
-    let params = (new URL(document.location)).searchParams;
-    let token = params.get('token');
-    fetch(`auth/verify_register.php?token=${token}`)
-    .then(response => response.json())
-    .then(data => {
-      // Traitez la réponse de la validation du compte
-      if (data.success) {
-        // Compte validé avec succès
-        console.log('Account validation successful!');
-      } else {
-        // Validation du compte échouée
-        console.log('Failed to validate account. Error:', data.error);
-      }
-    })
-    .catch(error => {
-      // Gérez les éventuelles erreurs survenues lors de la requête
+  async verifyRegister() {
+    try {
+      const params = (new URL(document.location)).searchParams;
+      const token = params.get('token');
+      
+      const response = await fetch(`php/auth/verify_register.php?token=${token}`);
+      
+      const data = await response.json();
+      
+      this.view.displayActivateRegister(data);
+    } catch (error) {
       console.error('Error:', error);
-    });
+    }
   }
 
-  login(username, password) {
-    fetch('auth/login.php', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        username: username,
-        password: password
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      if (data.success) {
-        // this.view.displayHomePage();
-        window.location.href = 'https://localhost';
-        console.log(data);
-      }
+  async login(username, password) {
+    try {
+      const response = await fetch('php/auth/login.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          username: username,
+          password: password
+        })
+      });
+      
+      const data = await response.json();
+      
+      if (data.success)
+        window.location.href = 'https://localhost/';
       else
-        console.log('error: ', data);
+        this.view.displayLogInError(data);
+      return data.success;
+    }
+    catch (error) {
+      console.error('Error:', error);
+    }
+  }
+
+  async checkLogin() {
+    return fetch('php/auth/check_login.php')
+    .then(response => response.json())
+    .then(data => {
+      return data;
     })
     .catch(error => {
       console.error('Error:', error);
+      return false;
     });
   }
 
-  checkLogin() {
-    fetch('auth/check_login.php')
-    .then(response => response.json())
-    .then(data => {
-      if (data.logged) {
-        console.log('You are logged in');
-        // User is logged in
-        // document.querySelector('loginStatus').textContent = 'You are connected';
-      } else {
-        console.log('You are NOT logged in');
-        // User is not logged in
-        // document.querySelector('loginStatus').textContent = 'Please log in';
-      }
-      return data.logged;
-    })
-    .catch(error => {
-      console.error('Error:', error);
-    });
+  logout() {
+    return fetch('php/auth/logout.php');
   }
 }

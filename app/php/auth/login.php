@@ -1,6 +1,7 @@
 <?php
 require_once '../db_connection.php';
 
+// session_set_cookie_params(86400 * 7);
 session_start();
 
 // Check if the form is submitted
@@ -25,33 +26,38 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $password = $data->password;
 
   // Prepare the query to check the user credentials
-  $stmt = $pdo->prepare("SELECT id, username, password FROM users WHERE username = :username");
+  $stmt = $pdo->prepare("SELECT id, username, password, verified FROM users WHERE username = :username");
   $stmt->execute(['username' => $username]);
   $user = $stmt->fetch();
+
+  $response = array(
+    'success' => false,
+    'error' => 'Invalid username or password.'
+  );
 
   // Check if a user with the provided username exists
   if ($user) {
     // Verify the password
-    if (password_verify($password, $user['password'])) {
-      // Password is correct, create a session for the user
-      $_SESSION['user_id'] = $user['id'];
-      $_SESSION['username'] = $user['username'];
-
+    if ($user['verified']) {
+      if (password_verify($password, $user['password'])) {
+        // Password is correct, create a session for the user
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['username'] = $user['username'];
+  
+        $response = array(
+          'success' => true,
+          'message' => 'Login successful.'
+        );
+      }
+    }
+    else {
       $response = array(
-        'success' => true,
-        'message' => 'Login successful'
+        'success' => false,
+        'error' => 'Account is not verified, check your emails.'
       );
-      header('Content-Type: application/json');
-      echo json_encode($response);
-      exit;
     }
   }
-  $response = array(
-    'success' => false,
-    'error' => 'Invalid username or password'
-  );
   header('Content-Type: application/json');
   echo json_encode($response);
-  exit;
 }
 ?>

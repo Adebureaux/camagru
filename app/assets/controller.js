@@ -4,13 +4,19 @@ export default class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
-    this.logged = false;
+    this.model.checkLogin()
+    .then(data => {
+      console.log('model constructor, is logged ?', data);
+      this.logged = data;
+      this.view.displayHeaderButtons(this.logged);
+    })
 
-    this.view.signInForm.addEventListener('submit', this.registerModel.bind(this));
+    this.view.signupForm.addEventListener('submit', this.registerModel.bind(this));
     this.view.loginForm.addEventListener('submit', this.loginModel.bind(this));
+    this.view.logoutLink.addEventListener('click', this.logoutModel.bind(this));
 
     page('/', this.homePage.bind(this));
-    page('/signin', this.registerPage.bind(this));
+    page('/signup', this.registerPage.bind(this));
     page('/login', this.loginPage.bind(this));
     page('/activate', this.activateRegisterPage.bind(this));
     page('*', this.notFoundPage.bind(this));
@@ -19,11 +25,11 @@ export default class Controller {
 
   homePage() {
     this.view.displayHomePage();
-    this.logged = this.model.checkLogin();
   }
 
   registerPage() {
-    this.view.displaySignInPagePage();
+    if (!this.logged)
+      this.view.displaySignupPagePage();
   }
 
   registerModel(event) {
@@ -33,16 +39,23 @@ export default class Controller {
   
   activateRegisterPage() {
     this.model.verifyRegister();
-    this.view.displayActivateRegisterPage();
   }
 
   loginPage() {
-    this.view.displayLoginPage();
+    if (!this.logged)
+      this.view.displayLoginPage();
+    else
+      this.view.displayHomePage();
   }
 
   loginModel(event) {
     event.preventDefault();
     this.model.login(this.view.username.firstChild.value, this.view.password.firstChild.value);
+  }
+
+  logoutModel() {
+    this.model.logout()
+    .then(() => this.view.displayHeaderButtons());
   }
 
   notFoundPage() {

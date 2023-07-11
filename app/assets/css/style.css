@@ -28,6 +28,7 @@ button {
   border-radius: 4px;
   background: #007bff;
   color: white;
+  padding: .5rem 1rem;
 }
 
 button:hover {
@@ -47,6 +48,11 @@ input {
 }
 
 form {
+  margin-top: 10vh;
+  width: 400px;
+}
+
+.main {
   margin-top: 10vh;
   width: 400px;
 }
@@ -71,7 +77,6 @@ form {
 }
 
 .auth-buttons button {
-  padding: .5rem 1rem;
   white-space: nowrap;
 }
 
@@ -90,6 +95,7 @@ form {
   margin: 0 auto;
   padding: 6px;
   margin-top: 16px;
+  padding: .5rem 1rem;
 }
 
 .response-area {
@@ -100,11 +106,15 @@ form {
 
 .response-area p {
   text-align: center;
-  color: red;
+  color: red;;
 }
 
 .response-area h3 {
   text-align: center;
+}
+
+.red button {
+  background-color:red;
 }
 
 @media only screen and (max-width: 767px) {
