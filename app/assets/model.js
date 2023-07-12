@@ -61,7 +61,7 @@ export default class Model {
       if (data.success)
         window.location.href = 'https://localhost/';
       else
-        this.view.displayLogInError(data);
+        this.view.displayLoginError(data);
       return data.success;
     }
     catch (error) {

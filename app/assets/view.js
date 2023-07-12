@@ -17,12 +17,7 @@ export default class View {
     this.headerButtons = this.createElement('div', 'auth-buttons');
 
     this.mainArea = this.createElement('div', 'main');
-
-    // this.app.append(this.mainArea);
-  }
-
-  refreshRoot() {
-    this.app.innerHTML = '';
+    this.app.append(this.mainArea);
   }
 
   refreshMain() {
@@ -52,13 +47,13 @@ export default class View {
   }
 
   displayHomePage() {
-    this.refreshRoot();
+    this.refreshMain();
     const test = this.createElement('div', 'loginStatus');
-    this.app.append(test);
+    this.mainArea.append(test);
   }
 
   displaySignupPagePage() {
-    this.refreshRoot();
+    this.refreshMain();
     this.signupForm.innerHTML = '';
     this.resetInput();
 
@@ -75,11 +70,11 @@ export default class View {
     this.signupErrorArea = this.createElementInDiv('p', 'response-area');
 
     this.signupForm.append(title, this.username, this.email, this.password, this.submitButton, this.signupErrorArea);
-    this.app.append(this.signupForm);
+    this.mainArea.append(this.signupForm);
   }
 
   displaySignupSuccess() {
-    this.refreshRoot();
+    this.refreshMain();
     this.signupForm.innerHTML = '';
 
     const confirm = this.createElementInDiv('h3', 'response-area');
@@ -89,7 +84,7 @@ export default class View {
     confirm.appendChild(instructions);
 
     this.signupForm.append(confirm);
-    this.app.append(this.signupForm);
+    this.mainArea.append(this.signupForm);
   }
 
   displaySignupError(data) {
@@ -97,7 +92,7 @@ export default class View {
   }
 
   displayLoginPage() {
-    this.refreshRoot();
+    this.refreshMain();
     this.loginForm.innerHTML = '';
     this.resetInput();
 
@@ -111,7 +106,7 @@ export default class View {
     this.logInErrorErrorArea = this.createElementInDiv('p', 'response-area');
 
     this.loginForm.append(title, this.username, this.password, this.loginButton, this.logInErrorErrorArea);
-    this.app.append(this.loginForm);
+    this.mainArea.append(this.loginForm);
   }
 
   displayLogInError(data) {
@@ -119,15 +114,13 @@ export default class View {
   }
 
   displayNotFoundPage() {
-    this.refreshRoot();
+    this.refreshMain();
     const notFound = this.createElement('h2');
     notFound.textContent = 'Error 404 : Page not found ...';
     this.mainArea.append(notFound);
-    this.app.append(this.mainArea);
   }
 
   displayActivateRegister(data) {
-    this.refreshRoot();
     this.refreshMain();
     const response = this.createElement('h2');
     response.textContent = data.message;
@@ -139,7 +132,6 @@ export default class View {
     this.mainArea.append(response);
     if (data.success)
       this.mainArea.append(loginLink);
-    this.app.append(this.mainArea);
   }
 
   createLinkButton(link, href, text) {
