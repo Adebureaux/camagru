@@ -16,14 +16,13 @@ export default class Model {
           password: password
         })
       });
-      
       const data = await response.json();
-      
       if (data.success)
         this.view.displaySignupSuccess(data);
       else
         this.view.displaySignupError(data);
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error:', error);
     }
   }

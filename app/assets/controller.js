@@ -55,7 +55,7 @@ export default class Controller {
 
   logoutModel() {
     this.model.logout()
-    .then(() => this.view.displayHeaderButtons());
+    .then(() => location.reload());
   }
 
   notFoundPage() {
