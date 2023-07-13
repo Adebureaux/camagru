@@ -9,12 +9,19 @@ export default class View {
     this.password.firstChild.placeholder = 'Password';
     this.password.firstChild.type = 'password';
     
-    this.signupForm = this.createElement('form');
-    this.loginForm = this.createElement('form');
+    this.signupForm = this.createElement('form', 'regular-margin');
+    this.loginForm = this.createElement('form', 'regular-margin');
+
+    this.uploadForm = this.createElement('form', 'upload-form');
 
     this.logoutLink = this.createElement('a', 'red');
 
-    this.headerButtons = this.createElement('div', 'auth-buttons');
+    this.headerButtons = this.createElement('div', 'buttons');
+
+    this.uploadButton = this.createElement('button');
+    this.createNavigationButtons();
+    this.createGallery();
+    this.createNoAccess();
 
     this.mainArea = this.createElement('div', 'main');
     this.app.append(this.mainArea);
@@ -38,19 +45,55 @@ export default class View {
       this.createLinkButton(loginLink, '/login', 'Log In');
       const signupLink = this.createElement('a');
       this.createLinkButton(signupLink, '/signup', 'Sign Up');
-      this.headerButtons.append(loginLink, signupLink);
+      this.headerButtons.append(this.galleryLink, loginLink, signupLink);
     }
     else {
       this.createLinkButton(this.logoutLink, '/', 'Log Out');
-      this.headerButtons.append(this.logoutLink);
+      this.headerButtons.append(this.galleryLink, this.editingLink, this.logoutLink);
     }
     header.append(this.headerButtons);
   }
 
-  displayHomePage() {
+  createNavigationButtons() {
+    this.galleryLink = this.createElement('a', 'green');
+    this.createLinkButton(this.galleryLink, '/', 'Home');
+    this.editingLink = this.createElement('a', 'green');
+    this.createLinkButton(this.editingLink, '/editing', 'Editing');
+  }
 
-    const test = this.createElement('div', 'loginStatus');
-    this.refreshMain(test);
+  displayHomePage() {
+    this.refreshMain(this.gallery);
+  }
+
+  createGallery() {
+    this.gallery = this.createElement('div', 'gallery-container');
+    const p = this.createElement('p');
+    p.textContent = 'Home';
+    this.gallery.append(p);
+  }
+
+  createEditing() {
+    this.editing = this.createElement('div', 'editing-container');
+    const mainSection = this.createElement('div', 'editing-main');
+    this.webcamPreview = this.createElement('div', 'webcam-preview');
+    const superposableImages = this.createElement('div', 'superposable-images');
+    this.uploadButton.textContent = 'Upload';
+    const captureButton = this.createElement('button');
+    captureButton.textContent = 'Capture';
+    mainSection.append(this.webcamPreview, superposableImages, this.uploadButton, captureButton);
+    const sideSection = this.createElement('div', 'editing-side');
+    const thumbnailContainer = this.createElement('div', 'thumbnail-container');
+    sideSection.append(thumbnailContainer);
+    this.editing.append(mainSection, sideSection);
+  }
+
+  createNoAccess() {
+    this.editing = this.createElement('h2', 'regular-margin');
+    this.editing.textContent = 'You must be connected to access this page.';
+  }
+
+  displayEditingPage() {
+     this.refreshMain(this.editing)
   }
 
   displaySignupPagePage() {
@@ -75,7 +118,6 @@ export default class View {
 
   displaySignupSuccess() {
     this.signupForm.innerHTML = '';
-
     const confirm = this.createElementInDiv('h3', 'response-area');
     confirm.firstChild.textContent = 'We sent you an email.';
     const instructions = this.createElement('h3');
@@ -101,24 +143,24 @@ export default class View {
     this.loginButton.textContent = 'Log In';
     this.loginButton.type = 'submit';
 
-    this.logInErrorErrorArea = this.createElementInDiv('p', 'response-area');
+    this.loginErrorErrorArea = this.createElementInDiv('p', 'response-area');
 
-    this.loginForm.append(title, this.username, this.password, this.loginButton, this.logInErrorErrorArea);
+    this.loginForm.append(title, this.username, this.password, this.loginButton, this.loginErrorErrorArea);
     this.refreshMain(this.loginForm);
   }
 
-  displayLogInError(data) {
-    this.logInErrorErrorArea.firstChild.textContent = data.error;
+  displayLoginError(data) {
+    this.loginErrorErrorArea.firstChild.textContent = data.error;
   }
 
   displayNotFoundPage() {
-    const notFound = this.createElement('h2');
-    notFound.textContent = 'Error 404 : Page not found ...';
+    const notFound = this.createElement('h2', 'regular-margin');
+    notFound.textContent = 'Page not found.';
     this.refreshMain(notFound);
   }
 
   displayActivateRegister(data) {
-    const response = this.createElement('h2');
+    const response = this.createElement('h2', 'regular-margin');
     response.textContent = data.message;
 
     const loginLink = this.createElement('a');
@@ -130,6 +172,12 @@ export default class View {
       this.mainArea.append(loginLink);
   }
 
+  displayUpload() {
+    const title = this.createElement('h2');
+    title.textContent = 'Upload an image';
+    this.uploadForm.append(title);
+  }
+
   createLinkButton(link, href, text) {
     const button = this.createElement('button');
     link.href = href;
@@ -139,10 +187,8 @@ export default class View {
 
   createElement(tag, className) {
     const element = document.createElement(tag);
-
     if (className)
       element.classList.add(className);
-
     return element;
   }
 
@@ -157,7 +203,6 @@ export default class View {
 
   getElement(selector) {
     const element = document.querySelector(selector);
-
     return element;
   }
 }

@@ -4,23 +4,33 @@ export default class Controller {
   constructor(model, view) {
     this.model = model;
     this.view = view;
-    this.model.checkLogin()
-    .then(data => {
-      console.log('model constructor, is logged ?', data);
-      this.logged = data;
-      this.view.displayHeaderButtons(this.logged);
-    })
+    this.logged = false;
+
+    this.initialize();
 
     this.view.signupForm.addEventListener('submit', this.registerModel.bind(this));
     this.view.loginForm.addEventListener('submit', this.loginModel.bind(this));
+    this.view.uploadButton.addEventListener('click', this.displayUpload.bind(this));
+    this.view.uploadForm.addEventListener('submit', this.displayUpload.bind(this));
     this.view.logoutLink.addEventListener('click', this.logoutModel.bind(this));
 
     page('/', this.homePage.bind(this));
     page('/signup', this.registerPage.bind(this));
     page('/login', this.loginPage.bind(this));
     page('/activate', this.activateRegisterPage.bind(this));
+    page('/editing', this.editingPage.bind(this));
     page('*', this.notFoundPage.bind(this));
     page.start();
+  }
+
+  async initialize() {
+    this.logged = await this.model.checkLogin();
+    this.view.displayHeaderButtons(this.logged);
+    if (this.logged) {
+      this.view.createEditing();
+      if (page.current === '/editing')
+        this.view.displayEditingPage();
+    }
   }
 
   homePage() {
@@ -28,13 +38,7 @@ export default class Controller {
   }
 
   registerPage() {
-    if (!this.logged)
-      this.view.displaySignupPagePage();
-  }
-
-  registerModel(event) {
-    event.preventDefault();
-    this.model.register(this.view.username.firstChild.value, this.view.email.firstChild.value, this.view.password.firstChild.value);
+    this.view.displaySignupPagePage();
   }
   
   activateRegisterPage() {
@@ -42,10 +46,20 @@ export default class Controller {
   }
 
   loginPage() {
-    if (!this.logged)
-      this.view.displayLoginPage();
-    else
-      this.view.displayHomePage();
+    this.view.displayLoginPage();
+  }
+
+  editingPage() {
+    this.view.displayEditingPage();
+  }
+
+  notFoundPage() {
+    this.view.displayNotFoundPage();
+  }
+
+  registerModel(event) {
+    event.preventDefault();
+    this.model.register(this.view.username.firstChild.value, this.view.email.firstChild.value, this.view.password.firstChild.value);
   }
 
   loginModel(event) {
@@ -58,7 +72,7 @@ export default class Controller {
     .then(() => location.reload());
   }
 
-  notFoundPage() {
-    this.view.displayNotFoundPage();
+  displayUpload() {
+   this.view.displayUpload(); 
   }
 }

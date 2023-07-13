@@ -47,15 +47,6 @@ input {
   box-sizing: border-box;
 }
 
-form {
-  width: 400px;
-}
-
-.main {
-  margin-top: 10vh;
-  width: 400px;
-}
-
 .container {
   margin: 25px;
   width: auto;
@@ -72,21 +63,34 @@ form {
 }
 
 .grid-center input {
-  width: 100%;
+  width: 400px;
 }
 
-.auth-buttons button {
+.buttons button {
   white-space: nowrap;
 }
 
-.auth-buttons a {
+.buttons a {
   margin: 0 .5rem;
   white-space: nowrap;
 }
 
-.auth-buttons {
+.buttons {
   display: flex;
   align-items: center;
+}
+
+.nav-buttons {
+  position: absolute;
+  align-items: center;
+  display: flex;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  margin-top: 20px;
+}
+
+.nav-buttons a {
+  margin: 20px;
 }
 
 .submit-btn {
@@ -105,7 +109,7 @@ form {
 
 .response-area p {
   text-align: center;
-  color: red;;
+  color: red;
 }
 
 .response-area h3 {
@@ -116,8 +120,41 @@ form {
   background-color:red;
 }
 
+.green button {
+  background-color:green;
+}
+
+.regular-margin {
+  margin-top: 10vh;
+}
+
+.editing-container {
+  display: grid;
+  grid-template-areas:
+    'main main main side side';
+  gap: 10px;
+  background-color: #2196F3;
+  padding: 10px;
+}
+
+.editing-container > div {
+  background-color: rgba(255, 255, 255, 0.8);
+  text-align: center;
+  padding: 20px 0;
+  font-size: 30px;
+}
+
+.editing-main {
+  grid-area: main;
+  width: 55vw;
+}
+
+.editing-side {
+  grid-area: side;
+  width: 33vw;
+}
+
 @media only screen and (max-width: 767px) {
-  /* Styles for mobile devices */
   header {
     padding: 8px;
   }
@@ -126,17 +163,57 @@ form {
     font-size: 25px;
   }
 
-  .auth-buttons button {
+  .buttons {
+    display: grid;
+  }
+
+  .buttons button {
     margin: .1 .2rem;
     padding: .2 .4rem;
     font-size: 14px;
+    width: 85px;
   }
 
-  .footer-menu ul {
-    visibility: hidden;
-    display: flex;
-    margin-top: 10px;
-    margin-bottom: 20px;
+  .grid-center input {
+    width: 100%;
+  }
+
+  .nav-buttons {
+    margin: 0;
   }
 }
 
+footer {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #111;
+  height: auto;
+  width: 100vw;
+  color: #fff;
+}
+
+.footer {
+  background: #000;
+  padding: 20px;
+  padding-bottom: 40px;
+}
+
+.footer p {
+  float: left;
+  font-size: 14px;
+  word-spacing: 2px;
+}
+
+.footer p a {
+  color:#44bae8;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.footer span {
+  text-transform: uppercase;
+  opacity: .4;
+  font-weight: 200;
+}

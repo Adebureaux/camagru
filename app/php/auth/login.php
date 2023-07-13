@@ -1,7 +1,7 @@
 <?php
 require_once '../db_connection.php';
 
-// session_set_cookie_params(86400 * 7);
+session_set_cookie_params(86400 * 7);
 session_start();
 
 // Check if the form is submitted

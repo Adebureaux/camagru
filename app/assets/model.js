@@ -5,7 +5,7 @@ export default class Model {
 
   async register(username, email, password) {
     try {
-      const response = await fetch('php/auth/register.php', {
+      const response = await fetch('/php/auth/register.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -32,19 +32,20 @@ export default class Model {
       const params = (new URL(document.location)).searchParams;
       const token = params.get('token');
       
-      const response = await fetch(`php/auth/verify_register.php?token=${token}`);
+      const response = await fetch(`/php/auth/verify_register.php?token=${token}`);
       
       const data = await response.json();
       
       this.view.displayActivateRegister(data);
-    } catch (error) {
+    }
+    catch (error) {
       console.error('Error:', error);
     }
   }
 
   async login(username, password) {
     try {
-      const response = await fetch('php/auth/login.php', {
+      const response = await fetch('/php/auth/login.php', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -56,9 +57,8 @@ export default class Model {
       });
       
       const data = await response.json();
-      
       if (data.success)
-        window.location.href = 'https://localhost/';
+        window.location.href = 'https://localhost/editing';
       else
         this.view.displayLoginError(data);
       return data.success;
@@ -69,18 +69,12 @@ export default class Model {
   }
 
   async checkLogin() {
-    return fetch('php/auth/check_login.php')
+    return fetch('/php/auth/check_login.php')
     .then(response => response.json())
-    .then(data => {
-      return data;
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      return false;
-    });
+    .then(data => data)
   }
 
-  logout() {
-    return fetch('php/auth/logout.php');
+  async logout() {
+    return fetch('/php/auth/logout.php');
   }
 }
