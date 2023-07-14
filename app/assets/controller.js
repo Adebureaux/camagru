@@ -10,9 +10,9 @@ export default class Controller {
 
     this.view.signupForm.addEventListener('submit', this.registerModel.bind(this));
     this.view.loginForm.addEventListener('submit', this.loginModel.bind(this));
-    this.view.uploadButton.addEventListener('click', this.displayUpload.bind(this));
-    this.view.uploadForm.addEventListener('submit', this.displayUpload.bind(this));
     this.view.logoutLink.addEventListener('click', this.logoutModel.bind(this));
+    this.view.uploadButton.addEventListener('click', this.displayUpload.bind(this));
+    // this.view.uploadForm.addEventListener('submit', this.displayUpload.bind(this));
 
     page('/', this.homePage.bind(this));
     page('/signup', this.registerPage.bind(this));

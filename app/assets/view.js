@@ -74,17 +74,17 @@ export default class View {
 
   createEditing() {
     this.editing = this.createElement('div', 'editing-container');
-    const mainSection = this.createElement('div', 'editing-main');
+    this.mainSection = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     const superposableImages = this.createElement('div', 'superposable-images');
     this.uploadButton.textContent = 'Upload';
     const captureButton = this.createElement('button');
     captureButton.textContent = 'Capture';
-    mainSection.append(this.webcamPreview, superposableImages, this.uploadButton, captureButton);
+    this.mainSection.append(this.webcamPreview, superposableImages, this.uploadButton, captureButton);
     const sideSection = this.createElement('div', 'editing-side');
     const thumbnailContainer = this.createElement('div', 'thumbnail-container');
     sideSection.append(thumbnailContainer);
-    this.editing.append(mainSection, sideSection);
+    this.editing.append(this.mainSection, sideSection);
   }
 
   createNoAccess() {
@@ -95,6 +95,15 @@ export default class View {
   displayEditingPage() {
      this.refreshMain(this.editing)
   }
+
+  displayUpload() {
+    const title = this.createElement('p');
+    title.textContent = 'Upload an image';
+    this.mainSection.replaceWith(title);
+    // this.editing.replaceChildren(title);
+    // this.editing.replaceWith(title);
+  }
+
 
   displaySignupPagePage() {
     this.signupForm.innerHTML = '';
@@ -170,12 +179,6 @@ export default class View {
     this.refreshMain(response);
     if (data.success)
       this.mainArea.append(loginLink);
-  }
-
-  displayUpload() {
-    const title = this.createElement('h2');
-    title.textContent = 'Upload an image';
-    this.uploadForm.append(title);
   }
 
   createLinkButton(link, href, text) {
