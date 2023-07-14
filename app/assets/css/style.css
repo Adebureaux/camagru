@@ -205,17 +205,12 @@ input[type=file]{
 footer {
   background: #111;
   color: #fff;
+  margin-top: 10vh;
 }
 
 .footer {
   background: #000;
   padding: 20px;
-  padding-bottom: 40px;
-}
-
-.footer p {
-  font-size: 14px;
-  word-spacing: 2px;
 }
 
 .footer p a {
@@ -226,6 +221,4 @@ footer {
 
 .footer span {
   text-transform: uppercase;
-  opacity: .4;
-  font-weight: 200;
 }
