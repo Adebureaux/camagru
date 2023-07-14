@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       'success' => false,
       'error' => 'Email is already taken.'
     );
+    header('Content-Type: application/json');
     echo json_encode($response);
     exit;
   }
