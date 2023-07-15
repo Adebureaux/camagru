@@ -52,4 +52,9 @@ export default class Model {
   async logout() {
     return fetch('/php/auth/logout.php');
   }
+
+  async videoStream() {
+    return navigator.mediaDevices.getUserMedia({ video: true })
+      .then(stream => stream)
+  }
 }

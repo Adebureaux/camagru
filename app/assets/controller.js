@@ -40,7 +40,16 @@ export default class Controller {
 
   editingPage() {
     this.model.checkLogin()
-    .then(logged => this.view.displayEditingPage(logged));
+    .then(logged => {
+      this.view.displayEditingPage(logged);
+      this.model.videoStream()
+      .then(stream => {
+        console.log(stream);
+        this.view.webcamPreview.innerHTML = `<video autoplay></video>`;
+        this.view.webcamPreview.firstChild.srcObject = stream;
+      })
+      .catch(() => {});
+    });
   }
 
   notFoundPage() {
@@ -54,7 +63,7 @@ export default class Controller {
       if (data.success)
         this.view.displaySignupSuccess();
       else
-        this.view.displaySignupError();
+        this.view.displaySignupError(data);
     })
   }
 

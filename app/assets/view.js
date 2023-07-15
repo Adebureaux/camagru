@@ -40,16 +40,17 @@ export default class View {
     this.signupPassword = this.createElementInDiv('input', 'grid-center');
     this.signupPassword.firstChild.placeholder = 'Password';
     this.signupPassword.firstChild.type = 'password';
-    this.signupButton = this.createElement('button', 'submit-btn');
+    this.signupButton = this.createElement('button', 'submit-button');
     this.signupButton.textContent = 'Create'
     this.signupButton.type = 'submit';
     this.signupErrorArea = this.createElementInDiv('p', 'response-area');
-    this.signupForm = this.createElement('form');
+    this.signupForm = this.createElement('form', 'align-form');
     this.signupForm.append(title, this.signupUsername, this.signupEmail, this.signupPassword, this.signupButton, this.signupErrorArea);
   }
 
   displaySignupPage() {
     this.resetInput([this.signupUsername.firstChild, this.signupEmail.firstChild, this.signupPassword.firstChild]);
+    this.signupErrorArea.firstChild.textContent = '';
     this.mainContent.replaceChildren(this.signupForm);
   }
 
@@ -75,16 +76,17 @@ export default class View {
     this.loginPassword = this.createElementInDiv('input', 'grid-center');
     this.loginPassword.firstChild.placeholder = 'Password';
     this.loginPassword.firstChild.type = 'password';
-    this.loginButton = this.createElement('button', 'submit-btn');
+    this.loginButton = this.createElement('button', 'submit-button');
     this.loginButton.textContent = 'Log In';
     this.loginButton.type = 'submit';
     this.loginErrorArea = this.createElementInDiv('p', 'response-area');
-    this.loginForm = this.createElement('form');
+    this.loginForm = this.createElement('form', 'align-form');
     this.loginForm.append(title, this.loginUsername, this.loginPassword, this.loginButton, this.loginErrorArea);
   }
 
   displayLoginPage() {
     this.resetInput([this.loginUsername.firstChild, this.loginPassword.firstChild]);
+    this.loginErrorArea.firstChild.textContent = '';
     this.mainContent.replaceChildren(this.loginForm);
   }
 
@@ -103,7 +105,7 @@ export default class View {
     response.textContent = data.message;
     const loginLink = this.createElement('a');
     this.createLinkButton(loginLink, '/login', 'Log In');
-    loginLink.firstChild.classList.add('submit-btn');
+    loginLink.firstChild.classList.add('submit-button');
     this.mainContent.replaceChildren(response);
     if (data.success)
       this.mainContent.append(loginLink);
@@ -115,8 +117,7 @@ export default class View {
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     this.superposableImages = this.createElement('div', 'superposable-images');
     this.uploadButton.type = 'file';
-    this.captureButton = this.createElement('button');
-    this.captureButton.textContent = 'Capture';
+    this.captureButton = this.createElement('button', 'capture-button');
     this.mainSection.append(this.webcamPreview, this.superposableImages, this.uploadButton, this.captureButton);
     this.sideSection = this.createElement('div', 'editing-side');
     this.thumbnailContainer = this.createElement('div', 'thumbnail-container');

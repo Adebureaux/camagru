@@ -83,6 +83,10 @@ input {
   align-items: center;
 }
 
+.align-form {
+  margin-top: 10vh;
+}
+
 .nav-buttons {
   position: absolute;
   align-items: center;
@@ -96,12 +100,28 @@ input {
   margin: 20px;
 }
 
-.submit-btn {
+.submit-button {
   display: block;
   margin: 0 auto;
   padding: 6px;
   margin-top: 16px;
   padding: .5rem 1rem;
+}
+
+.capture-button {
+  position: sticky;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.6);
+  border: 2px solid #000;
+}
+
+.capture-button:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .response-area {
@@ -128,13 +148,14 @@ input {
 }
 
 .content {
-  margin-top: 10vh;
+  margin-top: 2vh;
+  margin-bottom: 2vh;
 }
 
 .editing-container {
   display: grid;
   grid-template-areas:
-    'main side';
+  'main side';
   gap: 10px;
   background-color: #2196F3;
   padding: 10px;
@@ -142,35 +163,32 @@ input {
 
 .editing-container > div {
   background-color: rgba(255, 255, 255, 0.8);
-  text-align: center;
-  padding: 20px 0;
   font-size: 30px;
 }
 
 .editing-main {
-  grid-area: main;
   width: 65vw;
-  }
+  position: relative;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
 
 .editing-side {
-  grid-area: side;
   width: 25vw;
 }
 
 input[type=file]{
-  align-items: center;
   color:transparent;
+  z-index: 9999;
 }
 
 .webcam-preview {
   max-width: 100%;
-  max-height: 100%;
-  overflow: hidden;
+  height: 50vh;
 }
 
-.webcam-preview img {
+.webcam-preview:first-child {
   width: 100%;
-  height: auto;
 }
 
 @media only screen and (max-width: 767px) {
@@ -194,18 +212,21 @@ input[type=file]{
   }
 
   .grid-center input {
-    width: 100%;
+    width: 280px;
   }
 
   .nav-buttons {
     margin: 2px;
+  }
+
+  .align-form {
+    margin-top: 5vh;
   }
 }
 
 footer {
   background: #111;
   color: #fff;
-  margin-top: 10vh;
 }
 
 .footer {
