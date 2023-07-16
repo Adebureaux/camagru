@@ -9,7 +9,7 @@ services:
     volumes:
       - ./app:/var/www/html
       - ./data:/var/data/
-      - ./certs:/etc/apache2/certs
+      - ./certs:/etc/apache2/certs/
     depends_on:
       - db
     restart: on-failure

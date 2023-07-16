@@ -5,7 +5,9 @@ export default class Controller {
     this.model = model;
     this.view = view;
 
-    this.model.checkLogin().then(logged => this.view.displayHeaderButtons(logged))
+    this.checkLogin().then(logged => {
+      this.view.displayHeaderButtons(logged);
+    })
 
     this.view.signupForm.addEventListener('submit', this.registerModel.bind(this));
     this.view.loginForm.addEventListener('submit', this.loginModel.bind(this));
@@ -21,12 +23,22 @@ export default class Controller {
     page.start();
   }
 
+  async checkLogin() {
+    const response = await this.model.checkLogin();
+    return (response);
+  }
+
   homePage() {
     this.view.displayHomePage();
   }
 
   registerPage() {
-    this.view.displaySignupPage();
+    this.checkLogin().then(logged => {
+      if (!logged)
+        this.view.displaySignupPage();
+      else
+        page.redirect('/');
+    })
   }
   
   activateRegisterPage() {
@@ -35,16 +47,20 @@ export default class Controller {
   }
 
   loginPage() {
-    this.view.displayLoginPage();
+    this.checkLogin().then(logged => {
+      if (!logged)
+        this.view.displayLoginPage();
+      else
+        page.redirect('/');
+    })
   }
 
   editingPage() {
-    this.model.checkLogin()
+    this.checkLogin()
     .then(logged => {
       this.view.displayEditingPage(logged);
       this.model.videoStream()
       .then(stream => {
-        console.log(stream);
         this.view.webcamPreview.innerHTML = `<video autoplay></video>`;
         this.view.webcamPreview.firstChild.srcObject = stream;
       })
@@ -71,8 +87,10 @@ export default class Controller {
     event.preventDefault();
     this.model.login(this.view.loginUsername.firstChild.value, this.view.loginPassword.firstChild.value)
     .then(data => {
-      if (data.success)
-        window.location.href = 'https://localhost/editing';
+      if (data.success) {
+        page.redirect('/');
+        this.view.displayHeaderButtons(true);
+      }
       else
         this.view.displayLoginError(data);
     })
