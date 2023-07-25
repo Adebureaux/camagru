@@ -10,15 +10,8 @@ services:
       - ./app:/var/www/html
       - ./data:/var/data/
       - ./certs:/etc/apache2/certs/
-    depends_on:
-      - db
     restart: on-failure
     privileged: true
     hostname: camagru.local
     env_file:
     - .env
-
-  db:
-    image: keinos/sqlite3:latest
-    volumes:
-      - ./data:/var/data/

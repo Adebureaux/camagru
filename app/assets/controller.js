@@ -12,7 +12,8 @@ export default class Controller {
     this.view.signupForm.addEventListener('submit', this.registerModel.bind(this));
     this.view.loginForm.addEventListener('submit', this.loginModel.bind(this));
     this.view.logoutLink.addEventListener('click', this.logoutModel.bind(this));
-    this.view.uploadButton.addEventListener('click', this.uploadModel.bind(this));
+    this.view.uploadButton.addEventListener('click', this.uploadImage.bind(this));
+    this.view.captureButton.addEventListener('click', this.captureModel.bind(this));
 
     page('/', this.homePage.bind(this));
     page('/signup', this.registerPage.bind(this));
@@ -100,23 +101,27 @@ export default class Controller {
     this.model.logout().then(() => this.view.displayHeaderButtons(false));
   }
 
-  uploadModel() {
+  uploadImage() {
     this.view.uploadButton.addEventListener('change', () => {
       const file = this.view.uploadButton.files[0];
       if (file && isImageFile(file)) {
         const reader = new FileReader();
         reader.onload = () => {
-          this.view.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Uploaded Image">`;
+          this.view.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" class="upload">`;
         };
         reader.readAsDataURL(file);
-      } else {
-        this.view.webcamPreview.innerHTML = 'Invalid image file. Please select a GIF or PNG file.';
+      }
+      else {
+        this.view.webcamPreview.innerHTML = 'Invalid image file. Please select a GIF, PNG, JPG or JPEG file.';
       }
     });
   
     function isImageFile(file) {
-      const fileType = file.type;
-      return fileType === 'image/gif' || fileType === 'image/png';
+      return file.type === 'image/gif' || file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg';
     }
+  }
+
+  captureModel() {
+    this.model.capture(this.view.webcamPreview.firstChild);
   }
 }

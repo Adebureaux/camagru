@@ -5,6 +5,7 @@ export default class View {
     this.createSignupPage();
     this.createLoginPage();
     this.uploadButton = this.createElement('input');
+    this.captureButton = this.createElement('button', 'capture-button');
     this.mainContent = this.createElement('div', 'content');
     this.app.append(this.mainContent);
   }
@@ -55,7 +56,7 @@ export default class View {
   }
 
   displaySignupSuccess() {
-    const confirm = this.createElementInDiv('h3', 'response-area');
+    const confirm = this.createElementInDiv('h3');
     confirm.firstChild.textContent = 'We sent you an email.';
     const instructions = this.createElement('h3');
     instructions.textContent = 'Please click on the provided link in the email to confirm your account.';
@@ -101,7 +102,7 @@ export default class View {
   }
 
   displayActivateRegister(data) {
-    const response = this.createElement('h2');
+    const response = this.createElement('h2', 'align-form');
     response.textContent = data.message;
     const loginLink = this.createElement('a');
     this.createLinkButton(loginLink, '/login', 'Log In');
@@ -117,13 +118,63 @@ export default class View {
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     this.superposableImages = this.createElement('div', 'superposable-images');
     this.uploadButton.type = 'file';
-    this.captureButton = this.createElement('button', 'capture-button');
+
+    this.addSuperposableImages(['/assets/images/superposable_1.png', '/assets/images/superposable_2.png', '/assets/images/superposable_3.png']);
+    this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
+
     this.mainSection.append(this.webcamPreview, this.superposableImages, this.uploadButton, this.captureButton);
     this.sideSection = this.createElement('div', 'editing-side');
-    this.thumbnailContainer = this.createElement('div', 'thumbnail-container');
-    this.sideSection.append(this.thumbnailContainer);
+  
+    // const imgtest = this.createElement('img');
+    // imgtest.src = 'https://purepng.com/public/uploads/large/515023046579hvzohbmnlxqbdyqs1460y3msjygqbzq450jwkjlptpcrykihbss3ghbemg2ezgowfepfgdhheo0rziqr1ogu7qacx3zdqxltsnc.png';
+    // this.sideSection.append(imgtest);
+  
     this.editing.append(this.mainSection, this.sideSection);
   }
+
+  addSuperposableImages(images) {
+    for (const image of images) {
+      const imgElement = this.createImg(image);
+      imgElement.src = image;
+      imgElement.addEventListener('click', this.onSuperposableImageClick.bind(this));
+      this.superposableImages.appendChild(imgElement);
+    }
+  }
+
+  onSuperposableImageClick(event) {
+    const selectedImages = this.superposableImages.querySelectorAll('.selected');
+    selectedImages.forEach((image) => {
+      image.classList.remove('selected');
+    });
+    const selectedImage = event.target;
+    selectedImage.classList.add('selected');
+  }
+
+  onWebcamPreviewClick(event) {
+    const selectedImage = this.superposableImages.querySelector('.selected');
+    if (!selectedImage)
+      return;
+  
+    const imageCopy = this.createImg(selectedImage.src, 'pasted-image');
+    const previewRect = this.webcamPreview?.firstChild?.getBoundingClientRect();
+    if (!previewRect)
+      return;
+  
+    const cursorX = (event.clientX - previewRect.left) / previewRect.width * 100;
+    const cursorY = (event.clientY - previewRect.top) / previewRect.height * 100;
+  
+    // Calculate the position for the imageCopy to appear centered around the cursor
+    const imageWidth = selectedImage.width;
+    const imageHeight = selectedImage.height;
+    const centerX = cursorX - imageWidth / (2 * previewRect.width) * 100;
+    const centerY = cursorY - imageHeight / (2 * previewRect.height) * 100;
+  
+    imageCopy.style.position = 'absolute';
+    imageCopy.style.left = `${centerX}%`;
+    imageCopy.style.top = `${centerY}%`;
+    this.webcamPreview.appendChild(imageCopy);
+  }
+  
 
   displayEditingPage(logged) {
     if (logged) {
@@ -133,7 +184,7 @@ export default class View {
     }
     else {
       const noAccess = this.createElement('h2');
-      noAccess.textContent = 'You must be connected to access this page.';
+      noAccess.textContent = 'Sorry, you are not allowed to access this page.';
       this.mainContent.replaceChildren(noAccess);
     }
   }
@@ -156,6 +207,14 @@ export default class View {
     link.href = href;
     button.textContent = text;
     link.appendChild(button);
+  }
+
+  createImg(src, className) {
+    const img = this.createElement('img');
+    img.src = src;
+    if (className)
+      img.classList.add(className);
+    return img;
   }
 
   createElement(tag, className) {

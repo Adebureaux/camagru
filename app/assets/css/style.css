@@ -139,26 +139,72 @@ input {
 .editing-container {
   display: flex;
   flex-direction: row;
+  border: 2px solid #000;
 }
 
 .editing-main {
   flex: 1;
+  border: 2px solid #0a07ad;
+  min-width: 70vw;
+  height: 70vh;
+  overflow: auto;
+  position: relative;
+}
+
+.editing-main input {
+  position: absolute;
+  bottom: 0;
+  left: 0;
 }
 
 .editing-side {
   flex: 1;
+  border: 2px solid #b90000;
+  min-width: 20vw;
+}
+
+.webcam-preview {
+  position: relative;
+}
+
+.upload {
+  width: 70vw;
+}
+
+.superposable-images {
+  display: inline-grid;
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.superposable-images > * {
+  width: 50px;
+  height: auto;
+}
+
+.pasted-image {
+  width: 50px;
+  height: auto;
 }
 
 .capture-button {
   width: 60px;
   height: 60px;
+  position: sticky;
+  top: 60vh;
+  left: 45%;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #000;
 }
 
 .capture-button:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(0, 0, 0, 0.3);
+}
+
+.selected {
+  border: 2px solid #000;
 }
 
 @media only screen and (max-width: 767px) {
@@ -196,6 +242,25 @@ input {
   .editing-container {
     flex-direction: column;
   }
+
+  .editing-main {
+    min-width: 90vw;
+    min-height: 70vh;
+  }
+  
+  .editing-side {
+    min-width: 20vw;
+    min-height: 20vh;
+  }
+
+  .upload {
+    width: 97vw;
+  }
+
+  input[type="file"]{
+    color: transparent;
+  }
+  
 }
 
 footer {

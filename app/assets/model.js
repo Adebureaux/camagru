@@ -18,7 +18,12 @@ export default class Model {
   async verifyRegister() {
     const params = (new URL(document.location)).searchParams;
     const token = params.get('token');
-    return fetch(`/php/auth/verify_register.php?token=${token}`)
+    return fetch(`/php/auth/verify_register.php?token=${token}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
     .then(response => response.json())
     .then(data => data);
   }
@@ -50,11 +55,27 @@ export default class Model {
   }
 
   async logout() {
-    return fetch('/php/auth/logout.php');
+    return fetch('/php/auth/logout.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
   }
 
   async videoStream() {
     return navigator.mediaDevices.getUserMedia({ video: true })
-      .then(stream => stream)
+    .then(stream => stream)
+  }
+
+  async capture(img) {
+    fetch('/php/images/save_image.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => data);
   }
 }

@@ -22,13 +22,16 @@ sqlite3 "$DATABASE_FILE" <<EOF
   CREATE TABLE IF NOT EXISTS comments (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     image_id INTEGER,
+    user_id INTEGER,
     comment TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (image_id) REFERENCES images(id)
+    FOREIGN KEY (image_id) REFERENCES images(id),
+    FOREIGN KEY (user_id) REFERENCES users(id)
   );
   CREATE TABLE IF NOT EXISTS images (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     user_id INTEGER,
+    image_data BLOB,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     likes INTEGER DEFAULT 0,
     FOREIGN KEY (user_id) REFERENCES users(id)
