@@ -167,7 +167,7 @@ input {
   position: relative;
 }
 
-.upload {
+.edit-area {
   width: 70vw;
 }
 
@@ -253,8 +253,8 @@ input {
     min-height: 20vh;
   }
 
-  .upload {
-    width: 97vw;
+  .edit-area {
+    width: 90vw;
   }
 
   input[type="file"]{

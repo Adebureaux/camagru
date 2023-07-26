@@ -62,7 +62,7 @@ export default class Controller {
       this.view.displayEditingPage(logged);
       this.model.videoStream()
       .then(stream => {
-        this.view.webcamPreview.innerHTML = `<video autoplay></video>`;
+        this.view.webcamPreview.innerHTML = `<video autoplay class='edit-area'></video>`;
         this.view.webcamPreview.firstChild.srcObject = stream;
       })
       .catch(() => {});
@@ -107,7 +107,7 @@ export default class Controller {
       if (file && isImageFile(file)) {
         const reader = new FileReader();
         reader.onload = () => {
-          this.view.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" class="upload">`;
+          this.view.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" class="edit-area">`;
         };
         reader.readAsDataURL(file);
       }
