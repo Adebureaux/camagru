@@ -167,8 +167,8 @@ input {
   position: relative;
 }
 
-.edit-area {
-  width: 70vw;
+.upload {
+  width: 100%;
 }
 
 .superposable-images {
@@ -179,32 +179,38 @@ input {
 }
 
 .superposable-images > * {
-  width: 50px;
-  height: auto;
+  margin: 5px;
+  padding: 5px;
+  width: 100px;
+}
+
+.selected {
+  border: 2px solid #858585;
 }
 
 .pasted-image {
-  width: 50px;
-  height: auto;
+  width: 100px;
 }
 
 .capture-button {
   width: 60px;
   height: 60px;
-  position: sticky;
-  top: 60vh;
-  left: 45%;
+  position: fixed;
+  left: 50%;
+  bottom: 0%;
+  margin-left: -300px; /*half the width*/
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #000;
 }
 
-.capture-button:hover {
-  background-color: rgba(0, 0, 0, 0.3);
+input[type="file"] {
+  position: fixed;
+  top: 60vh;
 }
 
-.selected {
-  border: 2px solid #000;
+.capture-button:hover {
+  background-color: rgba(0, 0, 0, 0.3);
 }
 
 @media only screen and (max-width: 767px) {
@@ -257,10 +263,19 @@ input {
     width: 90vw;
   }
 
+  .superposable-images > * {
+    margin: 2px;
+    padding: 2px;
+    width: 50px;
+  }
+
   input[type="file"]{
     color: transparent;
   }
   
+  .pasted-image {
+    width: 50px;
+  }
 }
 
 footer {
