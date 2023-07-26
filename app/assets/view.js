@@ -139,6 +139,7 @@ export default class View {
       imgElement.addEventListener('click', this.onSuperposableImageClick.bind(this));
       this.superposableImages.appendChild(imgElement);
     }
+    this.superposableImages.firstChild.classList.add('selected');
   }
 
   onSuperposableImageClick(event) {
@@ -155,7 +156,7 @@ export default class View {
     if (!selectedImage)
       return;
   
-    const imageCopy = this.createImg(selectedImage.src, 'pasted-image');
+    this.pastedImage = this.createImg(selectedImage.src, 'pasted-image');
     const previewRect = this.webcamPreview?.firstChild?.getBoundingClientRect();
     if (!previewRect)
       return;
@@ -163,16 +164,15 @@ export default class View {
     const cursorX = (event.clientX - previewRect.left) / previewRect.width * 100;
     const cursorY = (event.clientY - previewRect.top) / previewRect.height * 100;
   
-    // Calculate the position for the imageCopy to appear centered around the cursor
     const imageWidth = selectedImage.width;
     const imageHeight = selectedImage.height;
     const centerX = cursorX - imageWidth / (2 * previewRect.width) * 100;
     const centerY = cursorY - imageHeight / (2 * previewRect.height) * 100;
   
-    imageCopy.style.position = 'absolute';
-    imageCopy.style.left = `${centerX}%`;
-    imageCopy.style.top = `${centerY}%`;
-    this.webcamPreview.appendChild(imageCopy);
+    this.pastedImage.style.position = 'absolute';
+    this.pastedImage.style.left = `${centerX}%`;
+    this.pastedImage.style.top = `${centerY}%`;
+    this.webcamPreview.appendChild(this.pastedImage);
   }
   
 
