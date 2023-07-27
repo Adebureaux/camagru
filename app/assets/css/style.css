@@ -55,7 +55,6 @@ input {
   width: auto;
   height: auto;
   position: relative;
-  display: flex;
   flex-grow: 1;
   justify-content: center;
 }
@@ -132,8 +131,7 @@ input {
 }
 
 .content {
-  margin-top: 2vh;
-  margin-bottom: 2vh;
+  margin: 1vw;
 }
 
 .editing-container {
@@ -145,8 +143,9 @@ input {
 .editing-main {
   flex: 1;
   border: 2px solid #0a07ad;
-  min-width: 70vw;
-  height: 70vh;
+  min-width: 80%;
+  /* min-width: 70vw;
+  height: 70vh; */
   overflow: auto;
   position: relative;
 }
@@ -160,14 +159,15 @@ input {
 .editing-side {
   flex: 1;
   border: 2px solid #b90000;
-  min-width: 20vw;
+  /* min-width: 20vw; */
+  min-width: 20%;
 }
 
 .webcam-preview {
   position: relative;
 }
 
-.upload {
+.edit-area {
   width: 100%;
 }
 
@@ -179,8 +179,6 @@ input {
 }
 
 .superposable-images > * {
-  margin: 5px;
-  padding: 5px;
   width: 100px;
 }
 
@@ -197,16 +195,11 @@ input {
   height: 60px;
   position: fixed;
   left: 50%;
-  bottom: 0%;
-  margin-left: -300px; /*half the width*/
+  z-index: 9999;
+  margin-left: -300px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #000;
-}
-
-input[type="file"] {
-  position: fixed;
-  top: 60vh;
 }
 
 .capture-button:hover {
@@ -250,17 +243,13 @@ input[type="file"] {
   }
 
   .editing-main {
-    min-width: 90vw;
-    min-height: 70vh;
+    /* min-width: 90vw;
+    min-height: 70vh; */
   }
   
   .editing-side {
-    min-width: 20vw;
-    min-height: 20vh;
-  }
-
-  .edit-area {
-    width: 90vw;
+    /* min-width: 20vw;
+    min-height: 20vh; */
   }
 
   .superposable-images > * {
