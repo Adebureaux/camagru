@@ -1,9 +1,11 @@
-FROM php:7.4-apache
+FROM php:8.2-apache
 
 # Install required packages
 RUN apt-get update \
     && apt-get upgrade -y \
-    && apt-get install -y libsqlite3-dev sqlite3 ufw libsasl2-modules vim
+    && apt-get install -y libsqlite3-dev sqlite3 ufw libsasl2-modules vim libfreetype6-dev libjpeg62-turbo-dev libpng-dev
+
+RUN docker-php-ext-configure gd --with-freetype --with-jpeg && docker-php-ext-install gd
 
 RUN echo "postfix postfix/mailname string camagru.local" | debconf-set-selections
 RUN echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections

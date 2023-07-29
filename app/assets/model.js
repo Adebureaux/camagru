@@ -68,14 +68,61 @@ export default class Model {
     .then(stream => stream)
   }
 
-  async capture(img) {
+  async capture(imgData, superposableImg, position) {
+    // Create a FormData object
+    const formData = new FormData();
+
+    // Convert Base64 image to blob
+    const byteString = atob(imgData.split(',')[1]);
+    const arrayBuffer = new ArrayBuffer(byteString.length);
+    const int8Array = new Uint8Array(arrayBuffer);
+    for (let i = 0; i < byteString.length; i++) {
+        int8Array[i] = byteString.charCodeAt(i);
+    }
+    const blob = new Blob([int8Array], { type: 'image/jpeg' });
+
+    // Append the image blob and the superposable image
+    formData.append('webcamImage', blob);
+
+    const response = await fetch(superposableImg);
+    if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    const superposableImageBlob = await response.blob();
+    formData.append('superposableImage', superposableImageBlob);
+
+    // Append the position data
+    formData.append('position', JSON.stringify(position));
+
+    // Send the request
     fetch('/php/images/save_image.php', {
-      method: 'POST',
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+      if (response.ok)
+        console.log('Data sent to the server successfully');
+      else
+        console.error('Error:', response.statusText);
+    })
+    .catch(error => console.error('Fetch error:', error));
+  }
+
+  async getUserImages() {
+    return fetch(`/php/images/get_user_images.php`, {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json'
-      }
+      },
     })
-    .then(response => response.json())
-    .then(data => data);
+    .then(response => {
+      console.log(response)
+      return response.json();
+    })
+    .then(data => {
+      console.log(data);
+      return data;
+    });
   }
+
 }

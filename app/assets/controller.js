@@ -66,6 +66,11 @@ export default class Controller {
         this.view.webcamPreview.firstChild.srcObject = stream;
       })
       .catch(() => {});
+      this.model.getUserImages()
+      .then(thumbnails => {
+        this.view.displayThumbnails(thumbnails.images);
+      })
+      .catch(e => console.log(e));
     });
   }
 
@@ -122,6 +127,28 @@ export default class Controller {
   }
 
   captureModel() {
-    this.model.capture(this.view.webcamPreview.firstChild);
+    // console.log(this.captureImage());
+    const pastedImage = this.view.getElement('.pasted-image');
+    if (pastedImage)
+      this.model.capture(this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)});
+  }
+
+  captureImage() {
+    const content = this.view.webcamPreview.firstChild;
+
+    if (content.tagName === 'IMG') {
+      return content.src;
+    }
+    else if (content.tagName === 'VIDEO') {
+      const canvas = document.createElement('canvas');
+      canvas.width = content.videoWidth;
+      canvas.height = content.videoHeight;
+
+      const context = canvas.getContext('2d');
+      context.drawImage(content, 0, 0, content.videoWidth, content.videoHeight);
+
+      return canvas.toDataURL('image/png');
+    }
+    return null;
   }
 }

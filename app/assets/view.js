@@ -7,6 +7,8 @@ export default class View {
     this.uploadButton = this.createElement('input');
     this.captureButton = this.createElement('button', 'capture-button');
     this.mainContent = this.createElement('div', 'content');
+    this.headerHeight = document.querySelector('header').offsetHeight + 20;
+    this.footerHeight = document.querySelector('footer').offsetHeight + 20;
     this.app.append(this.mainContent);
   }
 
@@ -114,6 +116,10 @@ export default class View {
 
   createEditing() {
     this.editing = this.createElement('div', 'editing-container');
+
+    this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
+
+    this.editingWrapper = this.createElement('div', 'editing-wrapper');
     this.mainSection = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     this.superposableImages = this.createElement('div', 'superposable-images');
@@ -122,21 +128,28 @@ export default class View {
     this.addSuperposableImages(['/assets/images/superposable_1.png', '/assets/images/superposable_2.png', '/assets/images/superposable_3.png']);
     this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
 
-    this.mainSection.append(this.webcamPreview, this.superposableImages, this.uploadButton, this.captureButton);
+    this.mainSection.append(this.webcamPreview);
+    this.editingWrapper.append(this.mainSection, this.captureButton, this.uploadButton, this.superposableImages);
     this.sideSection = this.createElement('div', 'editing-side');
   
     // const imgtest = this.createElement('img');
     // imgtest.src = 'https://purepng.com/public/uploads/large/515023046579hvzohbmnlxqbdyqs1460y3msjygqbzq450jwkjlptpcrykihbss3ghbemg2ezgowfepfgdhheo0rziqr1ogu7qacx3zdqxltsnc.png';
     // this.sideSection.append(imgtest);
   
-    this.editing.append(this.mainSection, this.sideSection);
+    this.editing.append(this.editingWrapper, this.sideSection);
   }
 
   addSuperposableImages(images) {
+    let i = 0;
+    this.sid = 0;
+    this.pastedImage = []
     for (const image of images) {
       const imgElement = this.createImg(image);
       imgElement.src = image;
       imgElement.addEventListener('click', this.onSuperposableImageClick.bind(this));
+      this.pastedImage[i] = imgElement.cloneNode(false);
+      this.pastedImage[i].classList.add('pasted-image');
+      imgElement.id = i++;
       this.superposableImages.appendChild(imgElement);
     }
     this.superposableImages.firstChild.classList.add('selected');
@@ -149,30 +162,33 @@ export default class View {
     });
     const selectedImage = event.target;
     selectedImage.classList.add('selected');
+    this.sid = selectedImage.id;
   }
 
   onWebcamPreviewClick(event) {
     const selectedImage = this.superposableImages.querySelector('.selected');
     if (!selectedImage)
       return;
+
+    const previous = this.getElement('.pasted-image');
+    previous?.remove();
   
-    this.pastedImage = this.createImg(selectedImage.src, 'pasted-image');
     const previewRect = this.webcamPreview?.firstChild?.getBoundingClientRect();
     if (!previewRect)
       return;
-  
+      
     const cursorX = (event.clientX - previewRect.left) / previewRect.width * 100;
     const cursorY = (event.clientY - previewRect.top) / previewRect.height * 100;
-  
+    
     const imageWidth = selectedImage.width;
     const imageHeight = selectedImage.height;
     const centerX = cursorX - imageWidth / (2 * previewRect.width) * 100;
     const centerY = cursorY - imageHeight / (2 * previewRect.height) * 100;
-  
-    this.pastedImage.style.position = 'absolute';
-    this.pastedImage.style.left = `${centerX}%`;
-    this.pastedImage.style.top = `${centerY}%`;
-    this.webcamPreview.appendChild(this.pastedImage);
+      
+    this.pastedImage[this.sid].style.position = 'absolute';
+    this.pastedImage[this.sid].style.left = `${centerX}%`;
+    this.pastedImage[this.sid].style.top = `${centerY}%`;
+    this.webcamPreview.appendChild(this.pastedImage[this.sid]);
   }
   
 
@@ -183,14 +199,25 @@ export default class View {
       this.mainContent.replaceChildren(this.editing);
     }
     else {
-      const noAccess = this.createElement('h2');
+      const noAccess = this.createElement('h2', 'align-form');
       noAccess.textContent = 'Sorry, you are not allowed to access this page.';
       this.mainContent.replaceChildren(noAccess);
     }
   }
 
+  displayThumbnails(thumbnails) {
+    for (const thumbnail of thumbnails) {
+      const imageElement = document.createElement('img');
+      imageElement.classList.add('thumbnails');
+      imageElement.src = "data:image/png;base64," + thumbnail.image_data;
+      this.sideSection.append(imageElement);
+    }
+    // This to add image when taken
+    // this.sideSection.insertBefore(this.pastedImage[0], this.sideSection.firstChild);
+  }
+
   displayHomePage() {
-    const title = this.createElement('h2');
+    const title = this.createElement('h2', 'align-form');
     title.textContent = 'Home Page';
     this.mainContent.replaceChildren(title);
   }
