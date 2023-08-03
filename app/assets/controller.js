@@ -64,17 +64,19 @@ export default class Controller {
       .then(stream => {
         this.view.webcamPreview.innerHTML = `<video autoplay class='edit-area'></video>`;
         this.view.webcamPreview.firstChild.srcObject = stream;
+        this.view.webcamPreview.style.maxHeight = '100%';
       })
       .catch(() => {});
       this.model.getUserImages()
       .then(thumbnails => {
-        this.view.displayThumbnails(thumbnails.images);
+        if (thumbnails?.images)
+          this.view.displayThumbnails(thumbnails.images);
       })
       .catch(e => console.log(e));
     });
   }
 
-  notFoundPage() {
+  notFoundPage() {oc
     this.view.displayNotFoundPage();
   }
 
@@ -113,12 +115,13 @@ export default class Controller {
         const reader = new FileReader();
         reader.onload = () => {
           this.view.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" class="edit-area">`;
-        };
+        }
         reader.readAsDataURL(file);
+        this.view.webcamPreview.style.maxHeight = '';
+        // this.view.editingWrapper.style.width = '70%';
       }
-      else {
+      else
         this.view.webcamPreview.innerHTML = 'Invalid image file. Please select a GIF, PNG, JPG or JPEG file.';
-      }
     });
   
     function isImageFile(file) {
@@ -127,7 +130,6 @@ export default class Controller {
   }
 
   captureModel() {
-    // console.log(this.captureImage());
     const pastedImage = this.view.getElement('.pasted-image');
     if (pastedImage)
       this.model.capture(this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)});
@@ -147,7 +149,7 @@ export default class Controller {
       const context = canvas.getContext('2d');
       context.drawImage(content, 0, 0, content.videoWidth, content.videoHeight);
 
-      return canvas.toDataURL('image/png');
+      return canvas.toDataURL('image/jpeg');
     }
     return null;
   }

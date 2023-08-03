@@ -137,6 +137,7 @@ input {
 .editing-container {
   display: flex;
   flex-direction: row;
+  justify-content: space-around;
 }
 
 .editing-wrapper {
@@ -144,27 +145,26 @@ input {
   display: flex;
   flex-direction: column;
   align-items: center;
-  width: 70%;
   height: 100%;
+  width: 45vw;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
-.editing-main {
+/* .editing-main {
   flex: 1;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-}
+} */
 
 .webcam-preview {
-  display: flex;
+  position: relative;
   width: 100%;
-
 }
 
-.webcam-preview :first-child{
+.webcam-preview :first-child {
   width: 100%;
-  height: auto;
 }
 
 .editing-wrapper input {

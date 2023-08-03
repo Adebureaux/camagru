@@ -18,6 +18,8 @@ if (isset($_FILES['webcamImage']) && $_FILES['webcamImage']['error'] === UPLOAD_
     $webcam_image = imagecreatefromstring(file_get_contents($webcam_image_tmp));
     $superposable_image = imagecreatefromstring(file_get_contents($superposable_image_tmp));
 
+    imagesavealpha($webcam_image, true);
+
     // Obtenez les données de position à partir de la requête POST et décodez le JSON en un objet PHP
     $position = json_decode($_POST['position']);
 

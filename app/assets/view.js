@@ -120,7 +120,7 @@ export default class View {
     this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
 
     this.editingWrapper = this.createElement('div', 'editing-wrapper');
-    this.mainSection = this.createElement('div', 'editing-main');
+    // this.mainSection = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     this.superposableImages = this.createElement('div', 'superposable-images');
     this.uploadButton.type = 'file';
@@ -128,8 +128,10 @@ export default class View {
     this.addSuperposableImages(['/assets/images/superposable_1.png', '/assets/images/superposable_2.png', '/assets/images/superposable_3.png']);
     this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
 
-    this.mainSection.append(this.webcamPreview);
-    this.editingWrapper.append(this.mainSection, this.captureButton, this.uploadButton, this.superposableImages);
+    // this.mainSection.append(this.webcamPreview);
+    this.editingWrapper.append(this.captureButton, this.uploadButton);
+    this.editingWrapper.append(this.webcamPreview, this.superposableImages);
+    // this.editingWrapper.appendChild(this.captureButton, this.uploadButton);
     this.sideSection = this.createElement('div', 'editing-side');
   
     // const imgtest = this.createElement('img');
@@ -173,7 +175,7 @@ export default class View {
     const previous = this.getElement('.pasted-image');
     previous?.remove();
   
-    const previewRect = this.webcamPreview?.firstChild?.getBoundingClientRect();
+    const previewRect = this.webcamPreview.getBoundingClientRect();
     if (!previewRect)
       return;
       
@@ -182,16 +184,15 @@ export default class View {
     
     const imageWidth = selectedImage.width;
     const imageHeight = selectedImage.height;
-    const centerX = cursorX - imageWidth / (2 * previewRect.width) * 100;
-    const centerY = cursorY - imageHeight / (2 * previewRect.height) * 100;
-      
+    const centerX = cursorX - (imageWidth / 2) / previewRect.width * 100;
+    const centerY = cursorY - (imageHeight / 2) / previewRect.height * 100;
+
     this.pastedImage[this.sid].style.position = 'absolute';
     this.pastedImage[this.sid].style.left = `${centerX}%`;
     this.pastedImage[this.sid].style.top = `${centerY}%`;
-    this.webcamPreview.appendChild(this.pastedImage[this.sid]);
+    this.webcamPreview.append(this.pastedImage[this.sid]);
   }
   
-
   displayEditingPage(logged) {
     if (logged) {
       if (this.editing === undefined)
@@ -212,8 +213,6 @@ export default class View {
       imageElement.src = "data:image/png;base64," + thumbnail.image_data;
       this.sideSection.append(imageElement);
     }
-    // This to add image when taken
-    // this.sideSection.insertBefore(this.pastedImage[0], this.sideSection.firstChild);
   }
 
   displayHomePage() {
