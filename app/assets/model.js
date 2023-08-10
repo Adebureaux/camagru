@@ -68,9 +68,16 @@ export default class Model {
     .then(stream => stream)
   }
 
-  async capture(imgData, superposableImg, position) {
+  async capture(imgElement, imgData, superposableImg, position) {
     // Create a FormData object
     const formData = new FormData();
+
+    const imgWidth = imgElement.offsetWidth;
+    const imgHeight = imgElement.offsetHeight;
+    const originalDimensions = {
+        width: imgWidth,
+        height: imgHeight
+    };
 
     // Convert Base64 image to blob
     const byteString = atob(imgData.split(',')[1]);
@@ -91,13 +98,13 @@ export default class Model {
     const superposableImageBlob = await response.blob();
     formData.append('superposableImage', superposableImageBlob);
 
-    // Append the position data
     formData.append('position', JSON.stringify(position));
+    formData.append('originalDimensions', JSON.stringify(originalDimensions));
 
     // Send the request
     fetch('/php/images/save_image.php', {
         method: 'POST',
-        body: formData
+        body: formData,
     })
     .then(response => {
       if (response.ok)
@@ -108,19 +115,20 @@ export default class Model {
     .catch(error => console.error('Fetch error:', error));
   }
 
-  async getUserImages() {
-    return fetch(`/php/images/get_user_images.php`, {
+  async getUserImages(currentOffset) {
+    return fetch(`/php/images/get_user_images.php?offset=${currentOffset}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       },
     })
     .then(response => {
-      console.log(response)
+      console.log(response);
       return response.json();
     })
     .then(data => {
       console.log(data);
+      currentOffset += 10;
       return data;
     });
   }

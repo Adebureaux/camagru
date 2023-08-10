@@ -140,9 +140,8 @@ input {
   justify-content: space-around;
 }
 
-.editing-wrapper {
+.editing-main {
   position: relative;
-  display: flex;
   flex-direction: column;
   align-items: center;
   height: 100%;
@@ -151,13 +150,6 @@ input {
   overflow-x: hidden;
 }
 
-/* .editing-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-} */
-
 .webcam-preview {
   position: relative;
   width: 100%;
@@ -165,12 +157,6 @@ input {
 
 .webcam-preview :first-child {
   width: 100%;
-}
-
-.editing-wrapper input {
-  position: absolute;
-  bottom: 0;
-  left: 0;
 }
 
 .editing-side {
@@ -207,22 +193,32 @@ input {
 }
 
 .pasted-image {
-  width: 100px;
+  width: 5vw;
+}
+
+.editing-buttons {
+  position: relative;
 }
 
 .capture-button {
-  width: 60px;
-  height: 60px;
+  width: 50px;
+  height: 50px;
   position: absolute;
-  bottom: 10px;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #000;
-  align-self: center;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .capture-button:hover {
   background-color: rgba(0, 0, 0, 0.3);
+}
+
+input[type="file"]{
+  color: transparent;
 }
 
 @media only screen and (max-width: 767px) {
@@ -265,10 +261,6 @@ input {
     margin: 2px;
     padding: 2px;
     width: 50px;
-  }
-
-  input[type="file"]{
-    color: transparent;
   }
   
   .pasted-image {

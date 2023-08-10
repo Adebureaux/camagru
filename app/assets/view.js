@@ -119,8 +119,7 @@ export default class View {
 
     this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
 
-    this.editingWrapper = this.createElement('div', 'editing-wrapper');
-    // this.mainSection = this.createElement('div', 'editing-main');
+    this.editingMain = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     this.superposableImages = this.createElement('div', 'superposable-images');
     this.uploadButton.type = 'file';
@@ -128,17 +127,13 @@ export default class View {
     this.addSuperposableImages(['/assets/images/superposable_1.png', '/assets/images/superposable_2.png', '/assets/images/superposable_3.png']);
     this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
 
-    // this.mainSection.append(this.webcamPreview);
-    this.editingWrapper.append(this.captureButton, this.uploadButton);
-    this.editingWrapper.append(this.webcamPreview, this.superposableImages);
-    // this.editingWrapper.appendChild(this.captureButton, this.uploadButton);
+    this.editingButtons = this.createElement('div', 'editing-buttons')
+    this.editingButtons.append(this.captureButton, this.uploadButton);
+    this.editingMain.append(this.webcamPreview, this.superposableImages, this.editingButtons);
     this.sideSection = this.createElement('div', 'editing-side');
   
-    // const imgtest = this.createElement('img');
-    // imgtest.src = 'https://purepng.com/public/uploads/large/515023046579hvzohbmnlxqbdyqs1460y3msjygqbzq450jwkjlptpcrykihbss3ghbemg2ezgowfepfgdhheo0rziqr1ogu7qacx3zdqxltsnc.png';
-    // this.sideSection.append(imgtest);
   
-    this.editing.append(this.editingWrapper, this.sideSection);
+    this.editing.append(this.editingMain, this.sideSection);
   }
 
   addSuperposableImages(images) {
@@ -168,6 +163,9 @@ export default class View {
   }
 
   onWebcamPreviewClick(event) {
+    if (this.webcamPreview.firstChild && this.webcamPreview.firstChild.tagName === 'P')
+      return;
+
     const selectedImage = this.superposableImages.querySelector('.selected');
     if (!selectedImage)
       return;
@@ -175,7 +173,7 @@ export default class View {
     const previous = this.getElement('.pasted-image');
     previous?.remove();
   
-    const previewRect = this.webcamPreview.getBoundingClientRect();
+    const previewRect = this.webcamPreview.firstChild.getBoundingClientRect();
     if (!previewRect)
       return;
       
@@ -214,6 +212,22 @@ export default class View {
       this.sideSection.append(imageElement);
     }
   }
+
+  async displayNoWebcamDefault() {
+    if (this.webcamPreview) {
+      const response = await fetch("/assets/images/default.jpg");
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      const defaultImageBlob = await response.blob();
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        this.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Default Image" class="edit-area">`;
+      };
+      reader.readAsDataURL(defaultImageBlob);
+    }
+  }
+  
 
   displayHomePage() {
     const title = this.createElement('h2', 'align-form');
