@@ -102,16 +102,11 @@ export default class Model {
     formData.append('originalDimensions', JSON.stringify(originalDimensions));
 
     // Send the request
-    fetch('/php/images/save_image.php', {
+    return fetch('/php/images/save_image.php', {
         method: 'POST',
         body: formData,
     })
-    .then(response => {
-      if (response.ok)
-        console.log('Data sent to the server successfully');
-      else
-        console.error('Error:', response.statusText);
-    })
+    .then(response => response)
     .catch(error => console.error('Fetch error:', error));
   }
 
@@ -122,15 +117,8 @@ export default class Model {
         'Content-Type': 'application/json'
       },
     })
-    .then(response => {
-      console.log(response);
-      return response.json();
-    })
-    .then(data => {
-      console.log(data);
-      currentOffset += 10;
-      return data;
-    });
+    .then(response => response.json())
+    .then(data => data);
   }
 
 }

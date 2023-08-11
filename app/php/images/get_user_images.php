@@ -31,13 +31,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     'images' => $images
                 ];
             }
-        } catch(PDOException $e) {
+            else {
+              $response = [
+                  'status' => 'no-more-images',
+                  'message' => 'No more images to fetch.'
+              ];
+          }
+        }
+        catch(PDOException $e) {
             $response = [
                 'status' => 'error',
                 'message' => 'Error while fetching the images: ' . $e->getMessage()
             ];
         }
-    } else {
+    }
+    else {
         $response = [
             'status' => 'error',
             'message' => 'Please log in to view your images.'

@@ -34,6 +34,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   }
   $username = filter_var($username, FILTER_SANITIZE_FULL_SPECIAL_CHARS);
   $email = filter_var($email, FILTER_SANITIZE_EMAIL);
+
+  if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+    $response = array(
+      'success' => false,
+      'error' => 'Invalid email format.'
+    );
+    echo json_encode($response);
+    exit;
+  }
   $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
   $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = :username");
   $stmt->execute(['username' => $username]);

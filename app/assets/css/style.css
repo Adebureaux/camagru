@@ -153,9 +153,15 @@ input {
 .webcam-preview {
   position: relative;
   width: 100%;
+  border: 2px solid #000;
+  box-sizing: border-box;
 }
 
 .webcam-preview :first-child {
+  display: block;
+}
+
+.webcam-preview .edit-area {
   width: 100%;
 }
 
@@ -166,15 +172,18 @@ input {
   display: flex;
   flex-direction: column;
   align-items: center;
+  border: 2px solid #000;
+  box-sizing: border-box;
+}
+
+.thumbnails {
+  border: 2px solid #000;
+  box-sizing: border-box;
 }
 
 .editing-side img {
   width: 100%;
   margin-bottom: 1em;
-}
-
-.edit-area {
-  width: 100%;
 }
 
 .superposable-images {
@@ -185,25 +194,34 @@ input {
 }
 
 .superposable-images > * {
-  width: 100px;
+  width: 50px;
 }
 
 .selected {
-  border: 2px solid #858585;
+  border: 2px solid #000;
 }
 
 .pasted-image {
-  width: 5vw;
+  width: 100px;
+}
+
+.error {
+  text-align: center;
+  margin-right: 50px;
+  margin-bottom: 50vh;
 }
 
 .editing-buttons {
   position: relative;
+  background-color: grey;
+  border: 2px solid #000;
+  box-sizing: border-box;
+  height: 70px;
 }
 
 .capture-button {
   width: 50px;
   height: 50px;
-  position: absolute;
   border-radius: 50%;
   background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #000;

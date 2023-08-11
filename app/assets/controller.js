@@ -16,6 +16,7 @@ export default class Controller {
     this.view.captureButton.addEventListener('click', this.captureModel.bind(this));
 
     this.currentOffset = 0;
+    this.thumbnailsFull = false;
 
     page('/', this.homePage.bind(this));
     page('/signup', this.registerPage.bind(this));
@@ -71,31 +72,38 @@ export default class Controller {
       .catch(() => this.view.displayNoWebcamDefault());
       this.model.getUserImages(this.currentOffset)
       .then(thumbnails => {
-        if (thumbnails?.images)
+        if (thumbnails?.images) {
           this.view.displayThumbnails(thumbnails.images);
           this.currentOffset += 10;
+          this.boundHandleScroll = this.handleScroll.bind(this);
+          this.view.sideSection.addEventListener('scroll', this.boundHandleScroll);
+        }
       })
       .catch(e => console.log(e));
   
-      // Add event listener for the scroll of the sideSection div
-      this.view.sideSection.addEventListener('scroll', this.handleScroll.bind(this));
+
     });
   }
   
   handleScroll(event) {
     const target = event.target;
+
+    if (this.thumbnailsFull) {
+      this.view.sideSection.removeEventListener('scroll', this.boundHandleScroll);
+      return;
+    }
     
-    // Check if scrolled near the bottom of the div
-    if (target.scrollHeight - target.scrollTop <= target.clientHeight) {
+    if (target.scrollHeight - target.scrollTop <= target.clientHeight + 1) {
       this.model.getUserImages(this.currentOffset)
       .then(thumbnails => {
         if (thumbnails?.images && thumbnails.images.length > 0) {
           this.view.displayThumbnails(thumbnails.images);
-          // Increase the offset by the number of images retrieved (assuming you're always retrieving 10 at a time)
           this.currentOffset += 10;
         }
+        else
+          this.thumbnailsFull = true;
       })
-      .catch(e => console.log(e));
+      .catch(() => {});
     }
   }
 
@@ -136,7 +144,7 @@ export default class Controller {
       const file = this.view.uploadButton.files[0];
       if (file && isImageFile(file)) {
         if (file.size > 8388608) {
-          this.view.webcamPreview.innerHTML = '<p>File size must be less than 8 MB. Please select a smaller file.<p>';
+          this.view.webcamPreview.innerHTML = '<p class="error">File size must be less than 8 MB. Please select a smaller file.<p>';
         }
         else {
           const reader = new FileReader();
@@ -145,11 +153,10 @@ export default class Controller {
           }
           reader.readAsDataURL(file);
           this.view.webcamPreview.style.maxHeight = '';
-          // this.view.editingWrapper.style.width = '70%';
         }
       }
       else {
-        this.view.webcamPreview.innerHTML = 'Invalid image file. Please select a GIF, PNG, JPG or JPEG file.';
+        this.view.webcamPreview.innerHTML = '<p class="error">Invalid image file. Please select a GIF, PNG, JPG or JPEG file.</p>';
       }
     });
   
@@ -161,8 +168,24 @@ export default class Controller {
 
   captureModel() {
     const pastedImage = this.view.getElement('.pasted-image');
-    if (pastedImage)
-      this.model.capture(this.view.webcamPreview.firstChild, this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)});
+    if (pastedImage) {
+      this.model.capture(this.view.webcamPreview.firstChild, this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)})
+      .then((r) => {
+        this.view.captureButton.disabled = true;
+        console.log(r);
+        fetch('/php/images/get_current_image.php', {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+        })
+        .then(response => response.json())
+        .then(data => {
+          this.view.instantThumbnail(data.image);
+          this.currentOffset++;
+        });
+      })
+    }
   }
 
   captureImage() {

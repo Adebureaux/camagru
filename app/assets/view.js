@@ -6,6 +6,7 @@ export default class View {
     this.createLoginPage();
     this.uploadButton = this.createElement('input');
     this.captureButton = this.createElement('button', 'capture-button');
+    this.captureButton.disabled = true;
     this.mainContent = this.createElement('div', 'content');
     this.headerHeight = document.querySelector('header').offsetHeight + 20;
     this.footerHeight = document.querySelector('footer').offsetHeight + 20;
@@ -127,7 +128,7 @@ export default class View {
     this.addSuperposableImages(['/assets/images/superposable_1.png', '/assets/images/superposable_2.png', '/assets/images/superposable_3.png']);
     this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
 
-    this.editingButtons = this.createElement('div', 'editing-buttons')
+    this.editingButtons = this.createElement('div', 'editing-buttons');
     this.editingButtons.append(this.captureButton, this.uploadButton);
     this.editingMain.append(this.webcamPreview, this.superposableImages, this.editingButtons);
     this.sideSection = this.createElement('div', 'editing-side');
@@ -173,7 +174,7 @@ export default class View {
     const previous = this.getElement('.pasted-image');
     previous?.remove();
   
-    const previewRect = this.webcamPreview.firstChild.getBoundingClientRect();
+    const previewRect = this.webcamPreview?.firstChild.getBoundingClientRect();
     if (!previewRect)
       return;
       
@@ -182,13 +183,14 @@ export default class View {
     
     const imageWidth = selectedImage.width;
     const imageHeight = selectedImage.height;
-    const centerX = cursorX - (imageWidth / 2) / previewRect.width * 100;
-    const centerY = cursorY - (imageHeight / 2) / previewRect.height * 100;
+    const centerX = cursorX - (imageWidth / previewRect.width) * 100;
+    const centerY = cursorY - (imageHeight / previewRect.height) * 100;
 
     this.pastedImage[this.sid].style.position = 'absolute';
     this.pastedImage[this.sid].style.left = `${centerX}%`;
     this.pastedImage[this.sid].style.top = `${centerY}%`;
     this.webcamPreview.append(this.pastedImage[this.sid]);
+    this.captureButton.disabled = false;
   }
   
   displayEditingPage(logged) {
@@ -211,6 +213,14 @@ export default class View {
       imageElement.src = "data:image/png;base64," + thumbnail.image_data;
       this.sideSection.append(imageElement);
     }
+  }
+
+  instantThumbnail(thumbnail) {
+    console.log(thumbnail);
+    const imageElement = document.createElement('img');
+    imageElement.classList.add('thumbnails');
+    imageElement.src = "data:image/png;base64," + thumbnail.image_data;
+    this.sideSection.prepend(imageElement);
   }
 
   async displayNoWebcamDefault() {

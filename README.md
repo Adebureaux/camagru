@@ -5,11 +5,9 @@
 
 
 ## Server
-- Init a PHP server
 
 ## General
 
-- Create a docker compose file
 
 # Dependencies
 - Docker
@@ -19,4 +17,4 @@
 - Create a .env file, this must contains:
 ## To enable mail system
 SMT_SERVER="[your.smtp.com]:port"
-SMTP_ACCESS="your_mail@email.com:yourPassWord"
+SMTP_ACCESS="your_mail@email.com:yourPassword"
