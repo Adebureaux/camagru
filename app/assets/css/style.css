@@ -153,7 +153,8 @@ input {
 .webcam-preview {
   position: relative;
   width: 100%;
-  border: 2px solid #000;
+  min-height: 30vh;
+  border: 5px solid #000;
   box-sizing: border-box;
 }
 
@@ -172,18 +173,17 @@ input {
   display: flex;
   flex-direction: column;
   align-items: center;
-  border: 2px solid #000;
+  border: 5px solid #000;
   box-sizing: border-box;
 }
 
-.thumbnails {
-  border: 2px solid #000;
-  box-sizing: border-box;
+.sep {
+  width: 90%;
+  border-top: 2px solid #000;
 }
 
 .editing-side img {
   width: 100%;
-  margin-bottom: 1em;
 }
 
 .superposable-images {
@@ -193,28 +193,19 @@ input {
   right: 0;
 }
 
-.superposable-images > * {
-  width: 50px;
-}
-
 .selected {
   border: 2px solid #000;
 }
 
-.pasted-image {
-  width: 100px;
-}
-
 .error {
   text-align: center;
-  margin-right: 50px;
-  margin-bottom: 50vh;
+  margin-right: 10vw;
 }
 
 .editing-buttons {
   position: relative;
   background-color: grey;
-  border: 2px solid #000;
+  border: 5px solid #000;
   box-sizing: border-box;
   height: 70px;
 }
@@ -239,7 +230,7 @@ input[type="file"]{
   color: transparent;
 }
 
-@media only screen and (max-width: 767px) {
+@media only screen and (max-width: 778px) {
   header {
     padding: 8px;
   }
@@ -275,14 +266,23 @@ input[type="file"]{
     flex-direction: column;
   }
 
+  .editing-main {
+    width: 100%;
+    margin-bottom: 3vh;
+  }
+
+  .webcam-preview {
+    min-height: unset;
+  }
+
   .superposable-images > * {
     margin: 2px;
     padding: 2px;
     width: 50px;
   }
-  
-  .pasted-image {
-    width: 50px;
+
+  .editing-side {
+    width: 100%;
   }
 }
 

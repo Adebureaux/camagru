@@ -69,7 +69,7 @@ export default class Controller {
         this.view.webcamPreview.firstChild.srcObject = stream;
         this.view.webcamPreview.style.maxHeight = '100%';
       })
-      .catch(() => this.view.displayNoWebcamDefault());
+      .catch(() => {});
       this.model.getUserImages(this.currentOffset)
       .then(thumbnails => {
         if (thumbnails?.images) {
@@ -169,10 +169,9 @@ export default class Controller {
   captureModel() {
     const pastedImage = this.view.getElement('.pasted-image');
     if (pastedImage) {
+      this.view.captureButton.disabled = true;
       this.model.capture(this.view.webcamPreview.firstChild, this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)})
-      .then((r) => {
-        this.view.captureButton.disabled = true;
-        console.log(r);
+      .then(() => {
         fetch('/php/images/get_current_image.php', {
           method: 'GET',
           headers: {

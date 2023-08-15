@@ -115,10 +115,19 @@ export default class View {
       this.mainContent.append(loginLink);
   }
 
+  editingContainerSizing() {
+    if (window.innerWidth < 778)
+      this.editing.style.height = 'auto';
+    else
+      this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
+  }
+
   createEditing() {
     this.editing = this.createElement('div', 'editing-container');
 
-    this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
+    this.editingContainerSizing();
+
+    window.addEventListener('resize', this.editingContainerSizing());
 
     this.editingMain = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
@@ -174,17 +183,19 @@ export default class View {
     const previous = this.getElement('.pasted-image');
     previous?.remove();
   
-    const previewRect = this.webcamPreview?.firstChild.getBoundingClientRect();
+    const previewRect = this.webcamPreview.firstChild?.getBoundingClientRect();
     if (!previewRect)
       return;
-      
-    const cursorX = (event.clientX - previewRect.left) / previewRect.width * 100;
-    const cursorY = (event.clientY - previewRect.top) / previewRect.height * 100;
     
     const imageWidth = selectedImage.width;
     const imageHeight = selectedImage.height;
-    const centerX = cursorX - (imageWidth / previewRect.width) * 100;
-    const centerY = cursorY - (imageHeight / previewRect.height) * 100;
+
+
+    const cursorX = event.clientX - previewRect.left;
+    const cursorY = event.clientY - previewRect.top;
+    
+    const centerX = (cursorX - imageWidth / 2) / previewRect.width * 100;
+    const centerY = (cursorY - imageHeight / 2) / previewRect.height * 100;
 
     this.pastedImage[this.sid].style.position = 'absolute';
     this.pastedImage[this.sid].style.left = `${centerX}%`;
@@ -208,35 +219,24 @@ export default class View {
 
   displayThumbnails(thumbnails) {
     for (const thumbnail of thumbnails) {
-      const imageElement = document.createElement('img');
-      imageElement.classList.add('thumbnails');
-      imageElement.src = "data:image/png;base64," + thumbnail.image_data;
-      this.sideSection.append(imageElement);
+      this.sideSection.append(this.createThumbnail(thumbnail.image_data));
+      this.sideSection.append(this.createElement('hr', 'sep'));
     }
   }
 
   instantThumbnail(thumbnail) {
-    console.log(thumbnail);
-    const imageElement = document.createElement('img');
-    imageElement.classList.add('thumbnails');
-    imageElement.src = "data:image/png;base64," + thumbnail.image_data;
-    this.sideSection.prepend(imageElement);
+    this.sideSection.prepend(this.createElement('hr', 'sep'));
+    this.sideSection.prepend(this.createThumbnail(thumbnail.image_data));
   }
 
-  async displayNoWebcamDefault() {
-    if (this.webcamPreview) {
-      const response = await fetch("/assets/images/default.jpg");
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`);
-      }
-      const defaultImageBlob = await response.blob();
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        this.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Default Image" class="edit-area">`;
-      };
-      reader.readAsDataURL(defaultImageBlob);
-    }
+  createThumbnail(image_data) {
+    const imageElement = document.createElement('img');
+    imageElement.classList.add('thumbnails');
+    imageElement.src = "data:image/png;base64," + image_data;
+    return imageElement;
   }
+
+
   
 
   displayHomePage() {

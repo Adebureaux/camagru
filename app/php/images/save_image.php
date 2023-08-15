@@ -21,6 +21,11 @@ if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
     $webcam_image_tmp = $_FILES['webcamImage']['tmp_name'];
     $superposable_image_tmp = $_FILES['superposableImage']['tmp_name'];
 
+    // $webcam_image_file = fopen($webcam_image_tmp, 'rb');
+    // $webcam_image_data = fread($webcam_image_file, filesize($webcam_image_tmp));
+    // error_log($webcam_image_file . $webcam_image_data);
+    // fclose($webcam_image_file);
+
     // Convertir les images à partir de leurs fichiers temporaires
     $webcam_image_bw = imagecreatefromstring(file_get_contents($webcam_image_tmp));
     $superposable_image = imagecreatefromstring(file_get_contents($superposable_image_tmp));
