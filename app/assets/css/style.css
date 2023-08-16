@@ -84,6 +84,15 @@ input {
 
 .align-form {
   margin-top: 10vh;
+  text-align: center;
+}
+
+.forgot-password {
+  margin-top: 16px;
+  display: inline-block;
+  color: blue;
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 .nav-buttons {
@@ -153,13 +162,13 @@ input {
 .webcam-preview {
   position: relative;
   width: 100%;
-  min-height: 30vh;
   border: 5px solid #000;
   box-sizing: border-box;
 }
 
 .webcam-preview :first-child {
   display: block;
+  box-sizing: border-box;
 }
 
 .webcam-preview .edit-area {
@@ -191,6 +200,12 @@ input {
   position: absolute;
   top: 0;
   right: 0;
+}
+
+.superposable-images img {
+  margin: 2px;
+  padding: 2px;
+  width: 75px;
 }
 
 .selected {
@@ -275,14 +290,12 @@ input[type="file"]{
     min-height: unset;
   }
 
-  .superposable-images > * {
-    margin: 2px;
-    padding: 2px;
-    width: 50px;
-  }
-
   .editing-side {
     width: 100%;
+  }
+
+  .superposable-images img {
+    width: 50px;
   }
 }
 

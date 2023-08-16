@@ -4,6 +4,7 @@ export default class View {
     this.createHeaderButtons();
     this.createSignupPage();
     this.createLoginPage();
+    this.forgotPasswordForm = this.createElement('form', 'align-form');
     this.uploadButton = this.createElement('input');
     this.captureButton = this.createElement('button', 'capture-button');
     this.captureButton.disabled = true;
@@ -83,9 +84,25 @@ export default class View {
     this.loginButton = this.createElement('button', 'submit-button');
     this.loginButton.textContent = 'Log In';
     this.loginButton.type = 'submit';
+    this.forgotPasswordLink = this.createElement('a', 'forgot-password');
+    this.forgotPasswordLink.textContent = 'Forgot your password ?';
+    this.forgotPasswordLink.addEventListener('click', this.forgotPasswordPage.bind(this));
     this.loginErrorArea = this.createElementInDiv('p', 'response-area');
     this.loginForm = this.createElement('form', 'align-form');
-    this.loginForm.append(title, this.loginUsername, this.loginPassword, this.loginButton, this.loginErrorArea);
+    this.loginForm.append(title, this.loginUsername, this.loginPassword, this.loginButton, this.forgotPasswordLink, this.loginErrorArea);
+  }
+
+  forgotPasswordPage() {
+    // this.loginForm.innerHTML = '<h3>Forgot your password<h3>'
+    const title = this.createElement('h3');
+    title.innerText = 'Forgot your password';
+    this.forgotPasswordEmail = this.createElementInDiv('input', 'grid-center');
+    this.forgotPasswordEmail.firstChild.placeholder = 'Email';
+    this.forgotPasswordSendMail = this.createElement('button', 'submit-button');
+    this.forgotPasswordSendMail.innerText = 'Send';
+    this.forgotPasswordSendMail.type = 'submit';
+    this.forgotPasswordForm.replaceChildren(title, this.forgotPasswordEmail, this.forgotPasswordSendMail);
+    this.mainContent.replaceChildren(this.forgotPasswordForm);
   }
 
   displayLoginPage() {
@@ -99,8 +116,9 @@ export default class View {
   }
 
   displayNotFoundPage() {
-    const notFound = this.createElement('h2');
-    notFound.textContent = 'Page not found.';
+    const notFound = this.createElement('p', 'align-form');
+    notFound.textContent = 'Page not found';
+    notFound.style.fontSize = '36px';
     this.mainContent.replaceChildren(notFound);
   }
 
@@ -154,10 +172,12 @@ export default class View {
       const imgElement = this.createImg(image);
       imgElement.src = image;
       imgElement.addEventListener('click', this.onSuperposableImageClick.bind(this));
-      this.pastedImage[i] = imgElement.cloneNode(false);
+      imgElement.id = i;
+      this.superposableImages.appendChild(imgElement); 
+      this.pastedImage[i] = this.createImg(image);
+      this.pastedImage[i].src = image;
       this.pastedImage[i].classList.add('pasted-image');
-      imgElement.id = i++;
-      this.superposableImages.appendChild(imgElement);
+      this.pastedImage[i].id = i++;
     }
     this.superposableImages.firstChild.classList.add('selected');
   }
@@ -184,23 +204,32 @@ export default class View {
     previous?.remove();
   
     const previewRect = this.webcamPreview.firstChild?.getBoundingClientRect();
+
+    console.log(previewRect);
     if (!previewRect)
       return;
     
-    const imageWidth = selectedImage.width;
-    const imageHeight = selectedImage.height;
+    const imageWidth = selectedImage.naturalWidth / 2;
+    const imageHeight = selectedImage.naturalHeight / 2;
 
-
-    const cursorX = event.clientX - previewRect.left;
-    const cursorY = event.clientY - previewRect.top;
+    console.log(imageWidth, imageHeight);
     
-    const centerX = (cursorX - imageWidth / 2) / previewRect.width * 100;
-    const centerY = (cursorY - imageHeight / 2) / previewRect.height * 100;
+    const cursorXPercent = (event.clientX - previewRect.left) / previewRect.width * 100;
+    const cursorYPercent = (event.clientY - previewRect.top) / previewRect.height * 100;
+    
+    const imageWidthPercent = (imageWidth / previewRect.width) * 100;
+    const imageHeightPercent = (imageHeight / previewRect.height) * 100;
+
+    const offsetX = imageWidthPercent * 0.50;
+    const offsetY = imageHeightPercent * 0.50;
+    
+    const centerX = cursorXPercent - imageWidthPercent / 2 - offsetX;
+    const centerY = cursorYPercent - imageHeightPercent / 2 - offsetY;
 
     this.pastedImage[this.sid].style.position = 'absolute';
     this.pastedImage[this.sid].style.left = `${centerX}%`;
     this.pastedImage[this.sid].style.top = `${centerY}%`;
-    this.webcamPreview.append(this.pastedImage[this.sid]);
+    this.webcamPreview.appendChild(this.pastedImage[this.sid]);
     this.captureButton.disabled = false;
   }
   
@@ -236,14 +265,12 @@ export default class View {
     return imageElement;
   }
 
-
-  
-
   displayHomePage() {
     const title = this.createElement('h2', 'align-form');
     title.textContent = 'Home Page';
     this.mainContent.replaceChildren(title);
   }
+
 
   // Utils functions
   resetInput(inputs) {

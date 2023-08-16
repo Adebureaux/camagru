@@ -10,6 +10,7 @@ export default class Controller {
     })
 
     this.view.signupForm.addEventListener('submit', this.registerModel.bind(this));
+    this.view.forgotPasswordForm.addEventListener('submit', this.forgotPasswordModel.bind(this));
     this.view.loginForm.addEventListener('submit', this.loginModel.bind(this));
     this.view.logoutLink.addEventListener('click', this.logoutModel.bind(this));
     this.view.uploadButton.addEventListener('click', this.uploadImage.bind(this));
@@ -80,8 +81,6 @@ export default class Controller {
         }
       })
       .catch(e => console.log(e));
-  
-
     });
   }
   
@@ -135,8 +134,18 @@ export default class Controller {
     })
   }
 
+  forgotPasswordModel(event) {
+    console.log(this.view.forgotPasswordEmail.firstChild.value)
+    event.preventDefault();
+    this.model.forgotPassword(this.view.forgotPasswordEmail.firstChild.value)
+    .then(data => {
+      console.log(data);
+    })
+  }
+
   logoutModel() {
-    this.model.logout().then(() => this.view.displayHeaderButtons(false));
+    this.model.logout()
+    .then(() => this.view.displayHeaderButtons(false));
   }
 
   uploadImage() {

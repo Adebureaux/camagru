@@ -68,14 +68,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
   }
   $activationToken = bin2hex(random_bytes(32));
-  $resetToken = bin2hex(random_bytes(32));
-  $stmt = $pdo->prepare("INSERT INTO users (username, email, password, activation_token, reset_token) VALUES (:username, :email, :password, :activation_token, :reset_token)");
+
+  $stmt = $pdo->prepare("INSERT INTO users (username, email, password, activation_token) VALUES (:username, :email, :password, :activation_token)");
   $stmt->execute([
     'username' => $username,
     'email' => $email,
     'password' => password_hash($password, PASSWORD_DEFAULT),
     'activation_token' => $activationToken,
-    'reset_token' => $resetToken,
   ]);
   $subject = 'Account Activation';
   $message = 'Thank you for registering! Please click the following link to activate your account: ' . generateActivationLink($activationToken);

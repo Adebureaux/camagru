@@ -15,6 +15,20 @@ export default class Model {
     .then(data => data);
   }
 
+  async forgotPassword(email) {
+    return fetch('/php/auth/password_reset.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: email
+      })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
   async verifyRegister() {
     const params = (new URL(document.location)).searchParams;
     const token = params.get('token');
