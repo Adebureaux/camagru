@@ -23,6 +23,7 @@ export default class Controller {
     page('/signup', this.registerPage.bind(this));
     page('/login', this.loginPage.bind(this));
     page('/activate', this.activateRegisterPage.bind(this));
+    page('/password-reset', this.passwordResetPage.bind(this));
     page('/editing', this.editingPage.bind(this));
     page('*', this.notFoundPage.bind(this));
     page.start();
@@ -48,8 +49,40 @@ export default class Controller {
   
   activateRegisterPage() {
     this.model.verifyRegister()
-    .then(data => this.view.displayActivateRegister(data));
+    .then(data => this.view.displayDataSuccessPage(data));
   }
+
+  passwordResetPage() {
+    this.model.verifyPasswordResetToken()
+    .then(data => {
+      if (data.success) {
+        this.view.displayPasswordReset();
+        this.view.newPasswordForm.addEventListener('submit', this.passwordResetModel.bind(this));
+      }
+      else
+        this.view.displayPasswordResetBadToken(data);
+      })
+    }
+
+  passwordResetModel(event) {
+    event.preventDefault();
+    console.log(this.view.newPassword.firstChild.value, this.view.confirmNewPassword.firstChild.value);
+    if (this.view.newPassword.firstChild.value === this.view.confirmNewPassword.firstChild.value) {
+      this.model.passwordReset(this.view.newPassword.firstChild.value)
+      .then(data => {
+        if (data.success)
+          this.view.displayDataSuccessPage(data);
+        else
+          this.view.newPasswordErrorArea.firstChild.textContent = data.error;
+      })
+    }
+    else {
+      this.view.newPasswordErrorArea.firstChild.textContent = 'Passwords does not match.';
+    }
+    this.view.newPassword.firstChild.value = '';
+    this.view.confirmNewPassword.firstChild.value = '';
+  }
+
 
   loginPage() {
     this.checkLogin().then(logged => {
@@ -139,7 +172,10 @@ export default class Controller {
     event.preventDefault();
     this.model.forgotPassword(this.view.forgotPasswordEmail.firstChild.value)
     .then(data => {
-      console.log(data);
+      if (data.success)
+        this.view.displayDataSuccessPage(data);
+      else
+        this.view.displayForgotPasswordError(data);
     })
   }
 

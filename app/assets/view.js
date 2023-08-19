@@ -93,7 +93,6 @@ export default class View {
   }
 
   forgotPasswordPage() {
-    // this.loginForm.innerHTML = '<h3>Forgot your password<h3>'
     const title = this.createElement('h3');
     title.innerText = 'Forgot your password';
     this.forgotPasswordEmail = this.createElementInDiv('input', 'grid-center');
@@ -101,8 +100,42 @@ export default class View {
     this.forgotPasswordSendMail = this.createElement('button', 'submit-button');
     this.forgotPasswordSendMail.innerText = 'Send';
     this.forgotPasswordSendMail.type = 'submit';
-    this.forgotPasswordForm.replaceChildren(title, this.forgotPasswordEmail, this.forgotPasswordSendMail);
+    this.forgotPasswordErrorArea = this.createElementInDiv('p', 'response-area');
+    this.forgotPasswordForm.replaceChildren(title, this.forgotPasswordEmail, this.forgotPasswordSendMail, this.forgotPasswordErrorArea);
     this.mainContent.replaceChildren(this.forgotPasswordForm);
+  }
+
+  displayPasswordReset() {
+    this.newPasswordForm = this.createElement('form', 'align-form');
+    const title = this.createElement('h3');
+    title.innerText = 'Reset your password';
+    this.newPassword = this.createElementInDiv('input', 'grid-center');
+    this.newPassword.firstChild.placeholder = 'New password';
+    this.newPassword.firstChild.type = 'password';
+    this.confirmNewPassword = this.createElementInDiv('input', 'grid-center');
+    this.confirmNewPassword.firstChild.placeholder = 'Confirm new password';
+    this.confirmNewPassword.firstChild.type = 'password';
+    this.newPasswordButton = this.createElement('button', 'submit-button');
+    this.newPasswordButton.innerText = 'Send';
+    this.newPasswordButton.type = 'submit';
+    this.newPasswordErrorArea = this.createElementInDiv('p', 'response-area');
+    this.newPasswordForm.replaceChildren(title, this.newPassword, this.confirmNewPassword, this.newPasswordButton, this.newPasswordErrorArea);
+    this.mainContent.replaceChildren(this.newPasswordForm);
+  }
+
+  displayForgotPasswordError(data) {
+    this.forgotPasswordEmail.firstChild.value = '';
+    this.forgotPasswordErrorArea.firstChild.textContent = data.error;
+  }
+
+  displayPasswordResetBadToken(data) {
+    const response = this.createElement('h2', 'align-form');
+    response.textContent = data.error;
+    const homeLink = this.createElement('a');
+    this.createLinkButton(homeLink, '/', 'Home');
+    homeLink.firstChild.classList.add('submit-button');
+    homeLink.firstChild.style.color = 'green';
+    this.mainContent.replaceChildren(response);
   }
 
   displayLoginPage() {
@@ -122,7 +155,7 @@ export default class View {
     this.mainContent.replaceChildren(notFound);
   }
 
-  displayActivateRegister(data) {
+  displayDataSuccessPage(data) {
     const response = this.createElement('h2', 'align-form');
     response.textContent = data.message;
     const loginLink = this.createElement('a');
@@ -270,7 +303,6 @@ export default class View {
     title.textContent = 'Home Page';
     this.mainContent.replaceChildren(title);
   }
-
 
   // Utils functions
   resetInput(inputs) {

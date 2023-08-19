@@ -16,7 +16,7 @@ export default class Model {
   }
 
   async forgotPassword(email) {
-    return fetch('/php/auth/password_reset.php', {
+    return fetch('/php/auth/password_reset_send_mail.php', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json'
@@ -24,6 +24,35 @@ export default class Model {
       body: JSON.stringify({
         email: email
       })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+  async passwordReset(newPassword) {
+    const params = (new URL(document.location)).searchParams;
+    const token = params.get('token');
+    return fetch(`/php/auth/password_reset.php?token=${token}`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        password: newPassword
+      })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+  async verifyPasswordResetToken() {
+    const params = (new URL(document.location)).searchParams;
+    const token = params.get('token');
+    return fetch(`/php/auth/verify_password_reset.php?token=${token}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
     .then(response => response.json())
     .then(data => data);

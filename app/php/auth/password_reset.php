@@ -1,66 +1,90 @@
 <?php
-
 require_once '../db_connection.php';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $request_body = file_get_contents('php://input');
-    $data = json_decode($request_body);
-    if (!$data) {
-        sendResponse(false, 'Invalid JSON data');
-        exit;
+    $data = json_decode($request_body, true);
+    
+    // if (!$data || !isset($data['password'])) {
+    //     sendResponse(false, 'Password is required.');
+    //     exit;
+    // }
+    $token = $_GET['token'];
+    $newPassword = $data['password'];
+
+    $checkPassword = isValidPassword($newPassword);
+    if (!$checkPassword[0]) {
+      $response = array(
+        'success' => false,
+        'error' => 'Password does not meet the complexity requirements: ' . $checkPassword[1]
+      );
+      echo json_encode($response);
+      exit;
     }
 
-    $email = $data->email;
+    if ($token && $newPassword) {
+      $stmt = $pdo->prepare("SELECT * FROM users WHERE reset_token = :token");
+      $stmt->bindParam(':token', $token);
+      $stmt->execute();
+      
+      $user = $stmt->fetch(PDO::FETCH_ASSOC);
+      
+      if ($user) {
+          $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+          $stmt = $pdo->prepare("UPDATE users SET password = :password, reset_token = NULL WHERE reset_token = :token");
+          $stmt->bindParam(':password', $hashedPassword);
+          $stmt->bindParam(':token', $token);
+          $stmt->execute();
+          
+          if ($stmt->rowCount() > 0) {
+              $response = [
+                  'success' => true,
+                  'message' => 'Password updated successfully.'
+              ];
+          }
+          else {
+              $response = [
+                  'success' => false,
+                  'message' => 'Failed to update the password.'
+              ];
+          }
+      }
+      else {
+          $response = [
+              'success' => false,
+              'message' => 'Invalid token.'
+          ];
+      }
+  }
+  else {
+      $response = [
+          'success' => false,
+          'message' => 'Token and new password are required.'
+      ];
+  }
 
-    if (empty($email)) {
-        sendResponse(false, 'Email is required.');
-        exit;
-    }
-
-    $email = filter_var($email, FILTER_SANITIZE_EMAIL);
-
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        sendResponse(false, 'Invalid email format.');
-        exit;
-    }
-
-    $resetToken = bin2hex(random_bytes(32));
-
-    $stmt = $pdo->prepare("UPDATE users SET reset_token = :reset_token WHERE email = :email");
-    $result = $stmt->execute(['reset_token' => $resetToken, 'email' => $email]);
-
-    if (!$result) {
-        sendResponse(false, 'Error updating reset token.');
-        exit;
-    }
-
-    $resetLink = generateResetLink($resetToken);
-    $subject = 'Password Reset';
-    $message = 'Click on the following link to reset your password: ' . $resetLink;
-    $headers = 'From: camagru@gmail.com';
-
-    $isEmailSent = mail($email, $subject, $message, $headers);
-    if ($isEmailSent) {
-        sendResponse(true, 'Password reset email sent successfully.');
-    }
-    else {
-        sendResponse(false, 'Failed to send password reset email. Please try again.');
-    }
+  header('Content-Type: application/json');
+  echo json_encode($response);
 }
 
-function generateResetLink($resetToken) {
-    $baseUrl = 'https://localhost';
-    return $baseUrl . '/reset-password?token=' . $resetToken;
-}
+function isValidPassword($password) {
+  $minimumLength = 8;
+  $uppercaseRequired = true;
+  $lowercaseRequired = true;
+  $numberRequired = true;
+  $specialCharacterRequired = true;
 
-function sendResponse($success, $message) {
-    $responseType = $success ? 'message' : 'error';
-    $response = array(
-        'success' => $success,
-        $responseType => $message
-    );
-    header('Content-Type: application/json');
-    echo json_encode($response);
+  if (strlen($password) < $minimumLength)
+    return [false, 'must be at least 8 characters long.'];
+  if ($uppercaseRequired && !preg_match('/[A-Z]/', $password))
+    return [false, 'must have at least 1 uppercase character.'];
+  if ($lowercaseRequired && !preg_match('/[a-z]/', $password))
+    return [false, 'must have at least 1 lowercase character.'];
+  if ($numberRequired && !preg_match('/[0-9]/', $password))
+    return [false, 'must have at least 1 number character.'];
+  if ($specialCharacterRequired && !preg_match('/[^a-zA-Z0-9]/', $password))
+    return [false, 'must have at least 1 special character.'];
+  return [true, 'successfull register.'];
 }
-
 ?>
