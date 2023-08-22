@@ -44,12 +44,24 @@ input {
   box-sizing: border-box;
 }
 
+.logo {
+  width: 80px;
+  height: 80px;
+}
+
+.flex {
+  display: flex;
+}
+
+.padding-right {
+  padding-right: 2vw;
+}
+
 .wrapper {
   min-height: 100%;
   display: flex;
   flex-direction: column;
 }
-
 
 .container {
   width: auto;
@@ -87,6 +99,27 @@ input {
   text-align: center;
 }
 
+.align-flex {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+}
+
+.full-lenght {
+  width: 275px;
+  margin-bottom: 10px;
+}
+
+.settings-title {
+  margin: 0;
+}
+
 .forgot-password {
   margin-top: 16px;
   display: inline-block;
@@ -120,9 +153,12 @@ input {
   position: relative;
   justify-content: center;
   align-items: center;
+  min-height: 20px; /* Choisissez une hauteur appropriée pour votre design */
+  padding: 0 0 20px 0;  /* Ajoutez un peu de padding pour que le texte ne soit pas collé au bord lorsque le texte est présent */
 }
 
 .response-area p {
+  margin: 0;
   text-align: center;
   color: red;
 }
@@ -162,6 +198,7 @@ input {
 .webcam-preview {
   position: relative;
   width: 100%;
+  min-height: 42%;
   border: 5px solid #000;
   box-sizing: border-box;
 }
@@ -245,6 +282,13 @@ input[type="file"]{
   color: transparent;
 }
 
+input[type="checkbox"]{
+  width: 25px;
+  height: 25px;
+  border: 1px solid #000;
+  outline: none;
+}
+
 @media only screen and (max-width: 778px) {
   header {
     padding: 8px;
@@ -252,6 +296,11 @@ input[type="file"]{
 
   h1 {
     font-size: 25px;
+  }
+
+  .logo {
+    width: 64px;
+    height: 64px;
   }
 
   .buttons {
@@ -298,6 +347,7 @@ input[type="file"]{
     width: 50px;
   }
 }
+
 
 footer {
   background: #111;

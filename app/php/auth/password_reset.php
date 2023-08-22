@@ -6,10 +6,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $request_body = file_get_contents('php://input');
     $data = json_decode($request_body, true);
     
-    // if (!$data || !isset($data['password'])) {
-    //     sendResponse(false, 'Password is required.');
-    //     exit;
-    // }
     $token = $_GET['token'];
     $newPassword = $data['password'];
 

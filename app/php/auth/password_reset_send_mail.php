@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
     if (!$user) {
-        sendResponse(false, 'Email does not exist.');
+        sendResponse(false, 'Email is not linked to any account.');
         exit;
     }
     

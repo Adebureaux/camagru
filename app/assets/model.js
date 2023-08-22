@@ -86,8 +86,61 @@ export default class Model {
     .then(data => data);
   }
 
+  async changeUsername(newUsername) {
+    return fetch('/php/auth/change_username.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        username: newUsername
+      })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+  async changeEmail(newEmail) {
+    return fetch('/php/auth/change_email.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        email: newEmail
+      })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+  async toggleNotifications(state) {
+    return fetch('/php/auth/toggle_notifications.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        state: state
+      })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
   async checkLogin() {
     return fetch('/php/auth/check_login.php', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+  async getUserInfo() {
+    return fetch('/php/auth/get_user_info.php', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

@@ -25,12 +25,14 @@ export default class View {
     this.createLinkButton(this.signupLink, '/signup', 'Sign Up');
     this.logoutLink = this.createElement('a', 'red');
     this.createLinkButton(this.logoutLink, '/', 'Log Out');
+    this.settingsLink = this.createElement('a', 'red');
+    this.createLinkButton(this.settingsLink, '/settings', 'Settings');
   }
 
   displayHeaderButtons(logged) {
     const headerButtons = this.getElement('#header-buttons');
     if (logged)
-      headerButtons.replaceChildren(this.galleryLink, this.editingLink, this.logoutLink);
+      headerButtons.replaceChildren(this.galleryLink, this.editingLink, this.logoutLink, this.settingsLink);
     else
       headerButtons.replaceChildren(this.galleryLink, this.loginLink, this.signupLink);
   }
@@ -40,11 +42,16 @@ export default class View {
     title.firstChild.textContent = 'Create your account';
     this.signupUsername = this.createElementInDiv('input', 'grid-center');
     this.signupUsername.firstChild.placeholder = 'Username';
+    this.signupUsername.firstChild.id = 'username';
+    this.signupUsername.firstChild.autocomplete = true;
     this.signupEmail = this.createElementInDiv('input', 'grid-center');
     this.signupEmail.firstChild.placeholder = 'Email';
+    this.signupEmail.firstChild.id = 'email';
+    this.signupEmail.firstChild.autocomplete = true;
     this.signupPassword = this.createElementInDiv('input', 'grid-center');
     this.signupPassword.firstChild.placeholder = 'Password';
     this.signupPassword.firstChild.type = 'password';
+    this.signupPassword.firstChild.id = 'password';
     this.signupButton = this.createElement('button', 'submit-button');
     this.signupButton.textContent = 'Create'
     this.signupButton.type = 'submit';
@@ -78,9 +85,12 @@ export default class View {
     title.firstChild.textContent = 'Log In';
     this.loginUsername = this.createElementInDiv('input', 'grid-center');
     this.loginUsername.firstChild.placeholder = 'Username';
+    this.loginUsername.firstChild.id = 'username';
+    this.loginUsername.firstChild.autocomplete = true;
     this.loginPassword = this.createElementInDiv('input', 'grid-center');
     this.loginPassword.firstChild.placeholder = 'Password';
     this.loginPassword.firstChild.type = 'password';
+    this.loginPassword.firstChild.id = 'password';
     this.loginButton = this.createElement('button', 'submit-button');
     this.loginButton.textContent = 'Log In';
     this.loginButton.type = 'submit';
@@ -92,11 +102,66 @@ export default class View {
     this.loginForm.append(title, this.loginUsername, this.loginPassword, this.loginButton, this.forgotPasswordLink, this.loginErrorArea);
   }
 
+  displaySettingsPage(user) {
+    if (user.success) {
+      console.log(user);
+      this.userData = user.data;
+
+      const title = this.createElementInDiv('h3');
+      title.firstChild.textContent = 'Settings';
+  
+      this.settings = this.createElement('div', 'align-form');
+    
+      this.changeUsername = this.createElementInDiv('input', 'align-flex');
+      this.changeUsernameTitle = this.createElement('p', 'settings-title');
+      this.changeUsernameTitle.textContent = 'Change your username';
+      this.changeUsername.firstChild.id = 'changeUsername'
+      this.changeUsername.firstChild.value = this.userData.username;
+      this.changeUsernameButton = this.createElement('button');
+      this.changeUsernameButton.textContent = 'Send';
+      this.changeUsernameError = this.createElementInDiv('p', 'response-area');
+      this.changeUsername.append(this.changeUsernameButton);
+
+      this.changeEmail = this.createElementInDiv('input', 'align-flex');
+      this.changeEmailTitle = this.createElement('p', 'settings-title');
+      this.changeEmailTitle.textContent = 'Change your email';
+      this.changeEmail.firstChild.id = 'changeEmail'
+      this.changeEmail.firstChild.value = this.userData.email;
+      this.changeEmailButton = this.createElement('button');
+      this.changeEmailButton.textContent = 'Send';
+      this.changeEmailError = this.createElementInDiv('p', 'response-area');
+      this.changeEmail.append(this.changeEmailButton);
+
+      this.resetPassword = this.createElementInDiv('button', 'align-flex');
+      this.resetPassword.firstChild.textContent = 'Reset your password';
+      this.resetPassword.firstChild.classList.add('full-lenght');
+      this.resetPasswordError = this.createElementInDiv('p', 'response-area'); 
+
+      this.notifications = this.createElementInDiv('input', 'align-flex');
+      this.notifications.firstChild.setAttribute('type', 'checkbox');
+      this.notifications.firstChild.id = 'notifications';
+      this.notifications.firstChild.checked = this.userData.notification;
+      const notifLabel = 'Email notifications';
+      this.notifications.prepend(notifLabel);
+
+      this.settings.append(title);
+      this.settings.append(this.changeUsernameTitle, this.changeUsername, this.changeUsernameError);
+      this.settings.append(this.changeEmailTitle, this.changeEmail, this.changeEmailError);
+      
+      this.settings.append(this.resetPassword, this.resetPasswordError, this.notifications);
+      this.mainContent.replaceChildren(this.settings);
+    }
+    else
+      this.displayNoAccess();
+  }
+
   forgotPasswordPage() {
     const title = this.createElement('h3');
     title.innerText = 'Forgot your password';
     this.forgotPasswordEmail = this.createElementInDiv('input', 'grid-center');
     this.forgotPasswordEmail.firstChild.placeholder = 'Email';
+    this.forgotPasswordEmail.firstChild.id = 'email';
+    this.forgotPasswordEmail.firstChild.autocomplete = true;
     this.forgotPasswordSendMail = this.createElement('button', 'submit-button');
     this.forgotPasswordSendMail.innerText = 'Send';
     this.forgotPasswordSendMail.type = 'submit';
@@ -272,11 +337,14 @@ export default class View {
         this.createEditing();
       this.mainContent.replaceChildren(this.editing);
     }
-    else {
-      const noAccess = this.createElement('h2', 'align-form');
-      noAccess.textContent = 'Sorry, you are not allowed to access this page.';
-      this.mainContent.replaceChildren(noAccess);
-    }
+    else
+      this.displayNoAccess();
+  }
+
+  displayNoAccess() {
+    const noAccess = this.createElement('h2', 'align-form');
+    noAccess.textContent = 'Sorry, you are not allowed to access this page.';
+    this.mainContent.replaceChildren(noAccess);
   }
 
   displayThumbnails(thumbnails) {

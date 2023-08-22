@@ -25,6 +25,7 @@ export default class Controller {
     page('/activate', this.activateRegisterPage.bind(this));
     page('/password-reset', this.passwordResetPage.bind(this));
     page('/editing', this.editingPage.bind(this));
+    page('/settings', this.settingsPage.bind(this));
     page('*', this.notFoundPage.bind(this));
     page.start();
   }
@@ -66,9 +67,8 @@ export default class Controller {
 
   passwordResetModel(event) {
     event.preventDefault();
-    console.log(this.view.newPassword.firstChild.value, this.view.confirmNewPassword.firstChild.value);
     if (this.view.newPassword.firstChild.value === this.view.confirmNewPassword.firstChild.value) {
-      this.model.passwordReset(this.view.newPassword.firstChild.value)
+      this.model.forgotPassword(this.view.newPassword.firstChild.value)
       .then(data => {
         if (data.success)
           this.view.displayDataSuccessPage(data);
@@ -115,6 +115,69 @@ export default class Controller {
       })
       .catch(e => console.log(e));
     });
+  }
+
+  settingsPage() {
+    this.model.getUserInfo()
+    .then(data => {
+        this.view.displaySettingsPage(data);
+        this.view.changeUsernameButton.addEventListener('click', this.changeUsernameModel.bind(this));
+        this.view.changeEmailButton.addEventListener('click', this.changeEmailModel.bind(this));
+        this.view.resetPassword.firstChild.addEventListener('click', this.resetPasswordModel.bind(this));
+        this.view.notifications.addEventListener('change', this.toggleNotificationsModel.bind(this));
+    })
+  }
+
+  changeUsernameModel() {
+    this.model.changeUsername(this.view.changeUsername.firstChild.value)
+    .then(data => {
+      if (data.success) {
+        this.view.changeUsernameError.firstChild.style.color = 'green';
+        this.view.changeUsernameError.firstChild.textContent = 'Username successfully changed.';
+        this.view.userData.username = this.view.changeUsername.firstChild.value;
+      }
+      else {
+        this.view.changeUsernameError.firstChild.style.color = 'red';
+        this.view.changeUsernameError.firstChild.textContent = data.error;
+        this.view.changeUsername.firstChild.value = this.view.userData.username;
+        this.view.userData.username = this.view.changeUsername.firstChild.value;
+      }
+    })
+  }
+
+  changeEmailModel() {
+    this.model.changeEmail(this.view.changeEmail.firstChild.value)
+    .then(data => {
+      if (data.success) {
+        console.log('success');
+        this.view.changeEmailError.firstChild.style.color = 'green';
+        this.view.changeEmailError.firstChild.textContent = 'Email successfully changed.';
+        this.view.userData.email = this.view.changeEmail.firstChild.value;
+      }
+      else {
+        this.view.changeEmailError.firstChild.style.color = 'red';
+        this.view.changeEmailError.firstChild.textContent = data.error;
+        this.view.changeEmail.firstChild.value = this.view.userData.email;
+      }
+    })
+  }
+
+  resetPasswordModel() {
+    this.model.forgotPassword(this.view.changeEmail.firstChild.value)
+    .then(data => {
+      if (data.success) {
+        this.view.resetPasswordError.firstChild.style.color = 'green';
+        this.view.resetPasswordError.firstChild.textContent = data.message;
+      }
+      else {
+        this.view.resetPasswordError.firstChild.style.color = 'red';
+        this.view.resetPasswordError.firstChild.textContent = data.error;
+      }
+    })
+  }
+
+  toggleNotificationsModel(event) {
+    this.model.toggleNotifications(event.target.checked)
   }
   
   handleScroll(event) {
