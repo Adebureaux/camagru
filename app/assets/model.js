@@ -188,9 +188,8 @@ export default class Model {
     formData.append('webcamImage', blob);
 
     const response = await fetch(superposableImg);
-    if (!response.ok) {
+    if (!response.ok)
         throw new Error(`HTTP error! status: ${response.status}`);
-    }
     const superposableImageBlob = await response.blob();
     formData.append('superposableImage', superposableImageBlob);
 
@@ -208,6 +207,17 @@ export default class Model {
 
   async getUserImages(currentOffset) {
     return fetch(`/php/images/get_user_images.php?offset=${currentOffset}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+  async getImages(currentOffset) {
+    return fetch(`/php/images/get_images.php?offset=${currentOffset}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

@@ -36,7 +36,11 @@ export default class Controller {
   }
 
   homePage() {
-    this.view.displayHomePage();
+    this.model.getImages(0)
+    .then(data => {
+      console.log(data);
+      this.view.displayHomePage(data.images);
+    })
   }
 
   registerPage() {

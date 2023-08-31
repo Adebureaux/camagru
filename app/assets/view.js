@@ -38,7 +38,7 @@ export default class View {
   }
 
   createSignupPage() {
-    const title = this.createElementInDiv('h3');
+    const title = this.createElementInDiv('h1');
     title.firstChild.textContent = 'Create your account';
     this.signupUsername = this.createElementInDiv('input', 'grid-center');
     this.signupUsername.firstChild.placeholder = 'Username';
@@ -56,6 +56,7 @@ export default class View {
     this.signupButton.textContent = 'Create'
     this.signupButton.type = 'submit';
     this.signupErrorArea = this.createElementInDiv('p', 'response-area');
+    this.signupErrorArea.style.paddingTop = '20px';
     this.signupForm = this.createElement('form', 'align-form');
     this.signupForm.append(title, this.signupUsername, this.signupEmail, this.signupPassword, this.signupButton, this.signupErrorArea);
   }
@@ -67,7 +68,7 @@ export default class View {
   }
 
   displaySignupSuccess() {
-    const confirm = this.createElementInDiv('h3');
+    const confirm = this.createElementInDiv('h2');
     confirm.firstChild.textContent = 'We sent you an email.';
     const instructions = this.createElement('h3');
     instructions.textContent = 'Please click on the provided link in the email to confirm your account.';
@@ -81,7 +82,7 @@ export default class View {
   }
 
   createLoginPage() {
-    const title = this.createElementInDiv('h3');
+    const title = this.createElementInDiv('h1');
     title.firstChild.textContent = 'Log In';
     this.loginUsername = this.createElementInDiv('input', 'grid-center');
     this.loginUsername.firstChild.placeholder = 'Username';
@@ -98,6 +99,7 @@ export default class View {
     this.forgotPasswordLink.textContent = 'Forgot your password ?';
     this.forgotPasswordLink.addEventListener('click', this.forgotPasswordPage.bind(this));
     this.loginErrorArea = this.createElementInDiv('p', 'response-area');
+    this.loginErrorArea.style.paddingTop = '20px';
     this.loginForm = this.createElement('form', 'align-form');
     this.loginForm.append(title, this.loginUsername, this.loginPassword, this.loginButton, this.forgotPasswordLink, this.loginErrorArea);
   }
@@ -107,7 +109,7 @@ export default class View {
       console.log(user);
       this.userData = user.data;
 
-      const title = this.createElementInDiv('h3');
+      const title = this.createElementInDiv('h1');
       title.firstChild.textContent = 'Settings';
   
       this.settings = this.createElement('div', 'align-form');
@@ -156,7 +158,7 @@ export default class View {
   }
 
   forgotPasswordPage() {
-    const title = this.createElement('h3');
+    const title = this.createElement('h2');
     title.innerText = 'Forgot your password';
     this.forgotPasswordEmail = this.createElementInDiv('input', 'grid-center');
     this.forgotPasswordEmail.firstChild.placeholder = 'Email';
@@ -166,13 +168,14 @@ export default class View {
     this.forgotPasswordSendMail.innerText = 'Send';
     this.forgotPasswordSendMail.type = 'submit';
     this.forgotPasswordErrorArea = this.createElementInDiv('p', 'response-area');
+    this.forgotPasswordErrorArea.style.paddingTop = '20px';
     this.forgotPasswordForm.replaceChildren(title, this.forgotPasswordEmail, this.forgotPasswordSendMail, this.forgotPasswordErrorArea);
     this.mainContent.replaceChildren(this.forgotPasswordForm);
   }
 
   displayPasswordReset() {
     this.newPasswordForm = this.createElement('form', 'align-form');
-    const title = this.createElement('h3');
+    const title = this.createElement('h2');
     title.innerText = 'Reset your password';
     this.newPassword = this.createElementInDiv('input', 'grid-center');
     this.newPassword.firstChild.placeholder = 'New password';
@@ -232,7 +235,8 @@ export default class View {
   }
 
   editingContainerSizing() {
-    if (window.innerWidth < 778)
+    // window.innerHeight >= 842
+    if (window.innerWidth <= 778)
       this.editing.style.height = 'auto';
     else
       this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
@@ -243,7 +247,7 @@ export default class View {
 
     this.editingContainerSizing();
 
-    window.addEventListener('resize', this.editingContainerSizing());
+    window.addEventListener('resize', this.editingContainerSizing.bind(this));
 
     this.editingMain = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
@@ -366,13 +370,37 @@ export default class View {
     return imageElement;
   }
 
-  displayHomePage() {
-    const title = this.createElement('h2', 'align-form');
-    title.textContent = 'Home Page';
-    this.mainContent.replaceChildren(title);
+  async displayHomePage(images) {
+    if (images) {
+      const imageContainer = this.createElement('div', 'home-container');
+    
+      images.forEach(image => {
+        const imageElement = this.createElement('img');
+        imageElement.src = "data:image/png;base64," + image.image_data;
+    
+        const likeButton = this.createElement('button');
+        const likeIconBefore = this.createElement('img');
+        likeIconBefore.src = '/assets/images/like_before.svg';
+        likeIconBefore.alt = 'Like Icon';
+        likeButton.appendChild(likeIconBefore);
+        // const likeButton = this.createElement('button');
+        // const likeIconAfter = this.createElement('img');
+    
+        const commentSection = this.createElement('div', 'comment-section');
+    
+        imageContainer.append(imageElement, likeButton, commentSection);
+      });
+    
+      this.mainContent.replaceChildren(imageContainer);
+    }
+    else {
+      const title = this.createElement('h2', 'align-form');
+      title.textContent = 'Empty home';
+      this.mainContent.replaceChildren(title);
+    }
+    
   }
 
-  // Utils functions
   resetInput(inputs) {
     for (let i = 0; i < inputs.length; i++) {
       inputs[i].value = '';

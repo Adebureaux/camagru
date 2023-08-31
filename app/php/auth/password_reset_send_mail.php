@@ -2,6 +2,8 @@
 
 require_once '../db_connection.php';
 
+const RESET_TIMEOUT = 600;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $request_body = file_get_contents('php://input');
     $data = json_decode($request_body);
@@ -24,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $stmt = $pdo->prepare("SELECT username FROM users WHERE email = :email");
+    $stmt = $pdo->prepare("SELECT username, last_reset_request FROM users WHERE email = :email");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
     
@@ -32,12 +34,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         sendResponse(false, 'Email is not linked to any account.');
         exit;
     }
+
+    $lastResetRequest = strtotime($user['last_reset_request']);
+    if ((time() - $lastResetRequest) < RESET_TIMEOUT) {
+        sendResponse(false, 'You already reset your password too soon, please wait before sending another request.');
+        exit;
+    }
     
     $username = $user['username'];
 
     $resetToken = bin2hex(random_bytes(32));
 
-    $stmt = $pdo->prepare("UPDATE users SET reset_token = :reset_token WHERE email = :email");
+    $stmt = $pdo->prepare("UPDATE users SET reset_token = :reset_token, last_reset_request = CURRENT_TIMESTAMP WHERE email = :email");
     $result = $stmt->execute(['reset_token' => $resetToken, 'email' => $email]);
 
     if (!$result) {
