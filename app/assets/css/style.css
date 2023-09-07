@@ -78,6 +78,27 @@ input:focus {
   border: 1px solid black;
 }
 
+.img-container {
+  border: 1px solid rgb(255, 0, 0);
+}
+
+.like-section {
+  border: 1px solid rgb(0, 255, 106);
+  display: flex;
+  align-items: center;
+}
+
+.like-button {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 8px;
+}
+
+.like-button img {
+  width: 24px;
+}
+
 .wrapper {
   min-height: 100%;
   display: flex;
@@ -113,6 +134,10 @@ input:focus {
 .buttons {
   display: flex;
   align-items: center;
+}
+
+.text-center {
+  text-align: center;
 }
 
 .align-form {
@@ -192,6 +217,10 @@ input:focus {
   background-color:red;
 }
 
+.orange button {
+  background-color:rgb(204, 127, 33);
+}
+
 .green button {
   background-color:green;
 }
@@ -207,21 +236,21 @@ input:focus {
 }
 
 .editing-main {
+  justify-content: space-between;
   position: relative;
+  display: flex;
   flex-direction: column;
   align-items: center;
-  height: 100%;
-  width: 45vw;
-  overflow-y: auto;
-  overflow-x: hidden;
+  border: 5px solid #000;
+  box-sizing: border-box;
+  max-width: 70%;
+  min-width: 50%;
 }
 
 .webcam-preview {
+  height: 100%;
   position: relative;
-  width: 100%;
-  min-height: 42%;
-  border: 5px solid #000;
-  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .webcam-preview :first-child {
@@ -229,8 +258,9 @@ input:focus {
   box-sizing: border-box;
 }
 
-.webcam-preview .edit-area {
+.edit-area {
   width: 100%;
+  height: 100%;
 }
 
 .editing-side {
@@ -254,7 +284,6 @@ input:focus {
 }
 
 .superposable-images {
-  display: inline-grid;
   position: absolute;
   top: 0;
   right: 0;
@@ -263,7 +292,8 @@ input:focus {
 .superposable-images img {
   margin: 2px;
   padding: 2px;
-  width: 65px;
+  width: 3vw;
+  max-height: 60px;
 }
 
 .selected {
@@ -273,14 +303,17 @@ input:focus {
 .error {
   text-align: center;
   margin-right: 10vw;
+  margin-left: 1vw;
 }
 
 .editing-buttons {
-  position: relative;
+  position: sticky;
+  bottom: 0;
   background-color: grey;
-  border: 5px solid #000;
+  border-top: 5px solid #000;
   box-sizing: border-box;
   height: 70px;
+  width: 100%;
 }
 
 .capture-button {
@@ -352,21 +385,17 @@ input[type="checkbox"]{
     flex-direction: column;
   }
 
-  .editing-main {
-    width: 100%;
-    margin-bottom: 3vh;
-  }
-
-  .webcam-preview {
-    min-height: unset;
-  }
-
   .editing-side {
     width: 100%;
   }
 
+  .editing-main {
+    max-width: 100vw;
+    margin-bottom: 10px;
+  }
+
   .superposable-images img {
-    width: 50px;
+    width: 30px;
   }
 }
 

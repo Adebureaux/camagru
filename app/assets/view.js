@@ -25,14 +25,14 @@ export default class View {
     this.createLinkButton(this.signupLink, '/signup', 'Sign Up');
     this.logoutLink = this.createElement('a', 'red');
     this.createLinkButton(this.logoutLink, '/', 'Log Out');
-    this.settingsLink = this.createElement('a', 'red');
+    this.settingsLink = this.createElement('a', 'orange');
     this.createLinkButton(this.settingsLink, '/settings', 'Settings');
   }
 
   displayHeaderButtons(logged) {
     const headerButtons = this.getElement('#header-buttons');
     if (logged)
-      headerButtons.replaceChildren(this.galleryLink, this.editingLink, this.logoutLink, this.settingsLink);
+      headerButtons.replaceChildren(this.galleryLink, this.editingLink, this.settingsLink, this.logoutLink);
     else
       headerButtons.replaceChildren(this.galleryLink, this.loginLink, this.signupLink);
   }
@@ -112,7 +112,7 @@ export default class View {
       const title = this.createElementInDiv('h1');
       title.firstChild.textContent = 'Settings';
   
-      this.settings = this.createElement('div', 'align-form');
+      this.settings = this.createElement('div', 'text-center');
     
       this.changeUsername = this.createElementInDiv('input', 'align-flex');
       this.changeUsernameTitle = this.createElement('p', 'settings-title');
@@ -235,7 +235,6 @@ export default class View {
   }
 
   editingContainerSizing() {
-    // window.innerHeight >= 842
     if (window.innerWidth <= 778)
       this.editing.style.height = 'auto';
     else
@@ -258,8 +257,8 @@ export default class View {
     this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
 
     this.editingButtons = this.createElement('div', 'editing-buttons');
-    this.editingButtons.append(this.captureButton, this.uploadButton);
-    this.editingMain.append(this.webcamPreview, this.superposableImages, this.editingButtons);
+    this.editingButtons.append(this.captureButton, this.uploadButton, this.superposableImages);
+    this.editingMain.append(this.webcamPreview, this.editingButtons);
     this.sideSection = this.createElement('div', 'editing-side');
   
   
@@ -313,8 +312,6 @@ export default class View {
     
     const imageWidth = selectedImage.naturalWidth / 2;
     const imageHeight = selectedImage.naturalHeight / 2;
-
-    console.log(imageWidth, imageHeight);
     
     const cursorXPercent = (event.clientX - previewRect.left) / previewRect.width * 100;
     const cursorYPercent = (event.clientY - previewRect.top) / previewRect.height * 100;
@@ -333,7 +330,7 @@ export default class View {
     this.pastedImage[this.sid].style.top = `${centerY}%`;
     this.webcamPreview.appendChild(this.pastedImage[this.sid]);
     this.captureButton.disabled = false;
-  }
+  }    
   
   displayEditingPage(logged) {
     if (logged) {
@@ -366,40 +363,64 @@ export default class View {
   createThumbnail(image_data) {
     const imageElement = document.createElement('img');
     imageElement.classList.add('thumbnails');
-    imageElement.src = "data:image/png;base64," + image_data;
+    imageElement.src = "data:image/jpeg;base64," + image_data;
     return imageElement;
   }
 
   async displayHomePage(images) {
     if (images) {
-      const imageContainer = this.createElement('div', 'home-container');
-    
-      images.forEach(image => {
-        const imageElement = this.createElement('img');
-        imageElement.src = "data:image/png;base64," + image.image_data;
-    
-        const likeButton = this.createElement('button');
-        const likeIconBefore = this.createElement('img');
-        likeIconBefore.src = '/assets/images/like_before.svg';
-        likeIconBefore.alt = 'Like Icon';
-        likeButton.appendChild(likeIconBefore);
-        // const likeButton = this.createElement('button');
-        // const likeIconAfter = this.createElement('img');
-    
-        const commentSection = this.createElement('div', 'comment-section');
-    
-        imageContainer.append(imageElement, likeButton, commentSection);
-      });
-    
-      this.mainContent.replaceChildren(imageContainer);
+      this.homeContainer = this.createElement('div', 'home-container');
+      images.forEach(image => this.appendHomeImage(image));
+      this.mainContent.replaceChildren(this.homeContainer);
     }
     else {
       const title = this.createElement('h2', 'align-form');
       title.textContent = 'Empty home';
       this.mainContent.replaceChildren(title);
     }
-    
   }
+  
+  appendHomeImage(image) {
+    const imgContainer = this.createElement('div', 'img-container');
+    const imageElement = this.createElement('img');
+    imageElement.src = "data:image/jpeg;base64," + image.image_data;
+    this.createInteractSection();
+    imgContainer.append(imageElement, this.interactSection);
+    this.homeContainer.append(imgContainer);
+  }
+
+  createInteractSection() {
+    this.interactSection = this.createElement('div', 'interact-container');
+    const likeSection = this.createElement('div', 'like-section');
+    const likeButton = this.createElementInDiv('img', 'like-button');
+    const unlikeButton = this.createElementInDiv('img', 'like-button');
+    likeButton.firstChild.src = '/assets/images/like.svg';
+    likeButton.firstChild.alt = 'Like Icon';
+    likeButton.addEventListener('click', () => {
+      likeSection.firstChild.replaceWith(unlikeButton);
+      likes++;
+      likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
+    })
+    unlikeButton.firstChild.src = '/assets/images/unlike.svg';
+    unlikeButton.firstChild.alt = 'Unlike Icon';
+    unlikeButton.addEventListener('click', () => {
+      likeSection.firstChild.replaceWith(likeButton);
+      likes--;
+      likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
+    })
+
+    let likes = 0;
+
+    const likesCounter = this.createElement('p');
+    likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
+
+
+    likeSection.append(likeButton, likesCounter);
+
+    const commentSection = this.createElement('div', 'comment-section');
+
+    this.interactSection.append(likeSection, commentSection);
+  } 
 
   resetInput(inputs) {
     for (let i = 0; i < inputs.length; i++) {

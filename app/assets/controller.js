@@ -1,4 +1,4 @@
-import page from "//unpkg.com/page@1.11.6/page.mjs";
+import page from "/lib/page.mjs";
 
 export default class Controller {
   constructor(model, view) {
@@ -105,7 +105,6 @@ export default class Controller {
       .then(stream => {
         this.view.webcamPreview.innerHTML = `<video autoplay class='edit-area'></video>`;
         this.view.webcamPreview.firstChild.srcObject = stream;
-        this.view.webcamPreview.style.maxHeight = '100%';
       })
       .catch(() => {});
       this.model.getUserImages(this.currentOffset)
@@ -171,7 +170,7 @@ export default class Controller {
     .then(data => {
       if (data.success) {
         this.view.resetPasswordError.firstChild.style.color = 'green';
-        this.view.resetPasswordError.firstChild.textContent = data.message;
+        this.view.resetPasswordError.firstChild.textContent = 'Email send successfully.';
       }
       else {
         this.view.resetPasswordError.firstChild.style.color = 'red';
@@ -255,8 +254,8 @@ export default class Controller {
     this.view.uploadButton.addEventListener('change', () => {
       const file = this.view.uploadButton.files[0];
       if (file && isImageFile(file)) {
-        if (file.size > 8388608) {
-          this.view.webcamPreview.innerHTML = '<p class="error">File size must be less than 8 MB. Please select a smaller file.<p>';
+        if (file.size > 1048576) {
+          this.view.webcamPreview.innerHTML = '<p class="error">File size must be less than 1 MB. Please select a smaller file.<p>';
         }
         else {
           const reader = new FileReader();
@@ -267,9 +266,8 @@ export default class Controller {
           this.view.webcamPreview.style.maxHeight = '';
         }
       }
-      else {
+      else
         this.view.webcamPreview.innerHTML = '<p class="error">Invalid image file. Please select a GIF, PNG, JPG or JPEG file.</p>';
-      }
     });
   
     function isImageFile(file) {
@@ -282,7 +280,7 @@ export default class Controller {
     const pastedImage = this.view.getElement('.pasted-image');
     if (pastedImage) {
       this.view.captureButton.disabled = true;
-      this.model.capture(this.view.webcamPreview.firstChild, this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)})
+      this.model.capture(this.view.webcamPreview, this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)})
       .then(() => {
         fetch('/php/images/get_current_image.php', {
           method: 'GET',
@@ -294,6 +292,7 @@ export default class Controller {
         .then(data => {
           this.view.instantThumbnail(data.image);
           this.currentOffset++;
+          this.view.captureButton.disabled = false;
         });
       })
     }
@@ -302,9 +301,8 @@ export default class Controller {
   captureImage() {
     const content = this.view.webcamPreview.firstChild;
 
-    if (content.tagName === 'IMG') {
+    if (content.tagName === 'IMG')
       return content.src;
-    }
     else if (content.tagName === 'VIDEO') {
       const canvas = document.createElement('canvas');
       canvas.width = content.videoWidth;

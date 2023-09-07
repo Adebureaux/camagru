@@ -3,7 +3,7 @@ require_once '../db_connection.php';
 
 session_start();
 
-$max_size = 8388608; // Taille maximale en octets (8 MB)
+$max_size = 1048576; // Taille maximale en octets (1 MB)
 
 if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
     $_FILES['webcamImage']['error'] === UPLOAD_ERR_OK &&
@@ -20,11 +20,6 @@ if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
     // Récupération des fichiers temporaires
     $webcam_image_tmp = $_FILES['webcamImage']['tmp_name'];
     $superposable_image_tmp = $_FILES['superposableImage']['tmp_name'];
-
-    // $webcam_image_file = fopen($webcam_image_tmp, 'rb');
-    // $webcam_image_data = fread($webcam_image_file, filesize($webcam_image_tmp));
-    // error_log($webcam_image_file . $webcam_image_data);
-    // fclose($webcam_image_file);
 
     // Convertir les images à partir de leurs fichiers temporaires
     $webcam_image_bw = imagecreatefromstring(file_get_contents($webcam_image_tmp));
@@ -48,7 +43,7 @@ if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
 
     // Convertir l'image résultante en chaîne de caractères
     ob_start();
-    imagepng($webcam_image);
+    imagejpeg($webcam_image);
     $image_data = ob_get_clean();
 
     // Préparation et exécution de la requête d'insertion
@@ -76,7 +71,6 @@ if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
     imagedestroy($superposable_image);
 }
 else {
-    error_log("Webcam or superposable image not set or error occurred while uploading.");
     $response = [
         'status' => 'error',
         'message' => 'Please select an image to upload.'
