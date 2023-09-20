@@ -61,6 +61,22 @@ input:focus {
   border-color: #007bff;
 }
 
+input[type="file"] {
+  position: absolute;
+  color: transparent;
+  border: none;
+  cursor: pointer;
+  width: 96px;
+}
+
+input[type="checkbox"]{
+  width: 25px;
+  height: 25px;
+  border: 1px solid #000;
+  outline: none;
+}
+
+
 .logo {
   width: 80px;
   height: 80px;
@@ -75,17 +91,41 @@ input:focus {
 }
 
 .home-container {
-  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
-.img-container {
+.post-container {
   border: 1px solid rgb(255, 0, 0);
+  text-align: center;
+  width: 60vw;
+}
+
+.image-container {
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.img-container img {
+  width: 100%;
+  max-width: 80%;
+  max-height: 100%;
+  object-fit: cover;
+}
+
+.interact-container {
+  text-align: start;
 }
 
 .like-section {
   border: 1px solid rgb(0, 255, 106);
   display: flex;
-  align-items: center;
 }
 
 .like-button {
@@ -97,6 +137,10 @@ input:focus {
 
 .like-button img {
   width: 24px;
+}
+
+.comment-section {
+  border: 1px solid rgb(4, 0, 255);
 }
 
 .wrapper {
@@ -159,20 +203,20 @@ input:focus {
 
 .full-lenght {
   width: 275px;
-  margin-bottom: 10px;
 }
 
 .settings-title {
   margin: 0;
 }
 
-.forgot-password {
+.link {
   margin-top: 16px;
   display: inline-block;
   color: blue;
   text-decoration: underline;
   cursor: pointer;
 }
+
 
 .nav-buttons {
   position: absolute;
@@ -243,8 +287,7 @@ input:focus {
   align-items: center;
   border: 5px solid #000;
   box-sizing: border-box;
-  max-width: 70%;
-  min-width: 50%;
+  width: 55%;
 }
 
 .webcam-preview {
@@ -285,6 +328,7 @@ input:focus {
 
 .superposable-images {
   position: absolute;
+  height: 100%;
   top: 0;
   right: 0;
 }
@@ -292,12 +336,11 @@ input:focus {
 .superposable-images img {
   margin: 2px;
   padding: 2px;
-  width: 3vw;
-  max-height: 60px;
+  height: -webkit-fill-available;
 }
 
 .selected {
-  border: 2px solid #000;
+  outline: 2px solid #000;
 }
 
 .error {
@@ -308,7 +351,8 @@ input:focus {
 
 .editing-buttons {
   position: sticky;
-  bottom: 0;
+  display: flex;
+  align-items: center;
   background-color: grey;
   border-top: 5px solid #000;
   box-sizing: border-box;
@@ -317,33 +361,25 @@ input:focus {
 }
 
 .capture-button {
+  position: absolute;
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  background-color: rgba(255, 255, 255, 0.6);
   border: 2px solid #000;
-  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+  background-color: rgba(255, 255, 255, 0.6);
 }
 
 .capture-button:hover {
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-input[type="file"]{
-  color: transparent;
-  border: none;
-  cursor: pointer;
+#addComment {
+  margin: 0;
 }
 
-input[type="checkbox"]{
-  width: 25px;
-  height: 25px;
-  border: 1px solid #000;
-  outline: none;
-}
 
 @media only screen and (max-width: 778px) {
   header {
@@ -390,12 +426,34 @@ input[type="checkbox"]{
   }
 
   .editing-main {
-    max-width: 100vw;
+    width: 100%;
     margin-bottom: 10px;
   }
 
+  .post-container {
+    width: 80%;
+  }
+
+  .comment-section {
+    text-align: center;
+  }
+  
+  .editing-main {
+    min-height: 55vh;
+  }
+}
+
+@media only screen and (max-width: 500px) {
   .superposable-images img {
-    width: 30px;
+    height: 30px;
+  }
+
+  .superposable-images {
+    top: 20%;
+  }
+  
+  .post-container {
+    width: 100%;
   }
 }
 

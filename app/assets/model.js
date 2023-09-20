@@ -159,9 +159,8 @@ export default class Model {
     })
   }
 
-  async videoStream() {
-    return navigator.mediaDevices.getUserMedia({ video: true })
-    .then(stream => stream)
+  async startVideo() {
+    return navigator.mediaDevices.getUserMedia({ video: true });
   }
 
   async capture(imgElement, imgData, superposableImg, position) {
@@ -227,4 +226,28 @@ export default class Model {
     .then(data => data);
   }
 
+  async likeImage(imageId) {
+    return fetch('/php/images/like.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ image_id: imageId })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+
+  async commentImage(imageId, comment) {
+    return fetch('/php/images/comment.php', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ image_id: imageId, comment: comment })
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
 }

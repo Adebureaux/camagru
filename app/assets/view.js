@@ -95,7 +95,7 @@ export default class View {
     this.loginButton = this.createElement('button', 'submit-button');
     this.loginButton.textContent = 'Log In';
     this.loginButton.type = 'submit';
-    this.forgotPasswordLink = this.createElement('a', 'forgot-password');
+    this.forgotPasswordLink = this.createElement('a', 'link');
     this.forgotPasswordLink.textContent = 'Forgot your password ?';
     this.forgotPasswordLink.addEventListener('click', this.forgotPasswordPage.bind(this));
     this.loginErrorArea = this.createElementInDiv('p', 'response-area');
@@ -257,7 +257,7 @@ export default class View {
     this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
 
     this.editingButtons = this.createElement('div', 'editing-buttons');
-    this.editingButtons.append(this.captureButton, this.uploadButton, this.superposableImages);
+    this.editingButtons.append(this.uploadButton, this.captureButton, this.superposableImages);
     this.editingMain.append(this.webcamPreview, this.editingButtons);
     this.sideSection = this.createElement('div', 'editing-side');
   
@@ -367,60 +367,19 @@ export default class View {
     return imageElement;
   }
 
-  async displayHomePage(images) {
-    if (images) {
-      this.homeContainer = this.createElement('div', 'home-container');
-      images.forEach(image => this.appendHomeImage(image));
-      this.mainContent.replaceChildren(this.homeContainer);
-    }
-    else {
-      const title = this.createElement('h2', 'align-form');
-      title.textContent = 'Empty home';
-      this.mainContent.replaceChildren(title);
-    }
+  async displayEmptyHomePage() {
+    const title = this.createElement('h2', 'align-form');
+    title.textContent = 'Empty home';
+    this.mainContent.replaceChildren(title);
   }
   
-  appendHomeImage(image) {
-    const imgContainer = this.createElement('div', 'img-container');
-    const imageElement = this.createElement('img');
-    imageElement.src = "data:image/jpeg;base64," + image.image_data;
-    this.createInteractSection();
-    imgContainer.append(imageElement, this.interactSection);
-    this.homeContainer.append(imgContainer);
+  createPost(image) {
+    const postContainer = this.createElement('div', 'post-container');
+    const imageElement = this.createElementInDiv('img', 'img-container');
+    imageElement.firstChild.src = "data:image/jpeg;base64," + image.image_data;
+    postContainer.append(imageElement);
+    return (postContainer);
   }
-
-  createInteractSection() {
-    this.interactSection = this.createElement('div', 'interact-container');
-    const likeSection = this.createElement('div', 'like-section');
-    const likeButton = this.createElementInDiv('img', 'like-button');
-    const unlikeButton = this.createElementInDiv('img', 'like-button');
-    likeButton.firstChild.src = '/assets/images/like.svg';
-    likeButton.firstChild.alt = 'Like Icon';
-    likeButton.addEventListener('click', () => {
-      likeSection.firstChild.replaceWith(unlikeButton);
-      likes++;
-      likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
-    })
-    unlikeButton.firstChild.src = '/assets/images/unlike.svg';
-    unlikeButton.firstChild.alt = 'Unlike Icon';
-    unlikeButton.addEventListener('click', () => {
-      likeSection.firstChild.replaceWith(likeButton);
-      likes--;
-      likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
-    })
-
-    let likes = 0;
-
-    const likesCounter = this.createElement('p');
-    likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
-
-
-    likeSection.append(likeButton, likesCounter);
-
-    const commentSection = this.createElement('div', 'comment-section');
-
-    this.interactSection.append(likeSection, commentSection);
-  } 
 
   resetInput(inputs) {
     for (let i = 0; i < inputs.length; i++) {

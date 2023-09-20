@@ -5,9 +5,7 @@ export default class Controller {
     this.model = model;
     this.view = view;
 
-    this.checkLogin().then(logged => {
-      this.view.displayHeaderButtons(logged);
-    })
+    this.checkLogin().then(logged => this.view.displayHeaderButtons(logged));
 
     this.view.signupForm.addEventListener('submit', this.registerModel.bind(this));
     this.view.forgotPasswordForm.addEventListener('submit', this.forgotPasswordModel.bind(this));
@@ -18,6 +16,7 @@ export default class Controller {
 
     this.currentOffset = 0;
     this.thumbnailsFull = false;
+    this.stream = null;
 
     page('/', this.homePage.bind(this));
     page('/signup', this.registerPage.bind(this));
@@ -31,20 +30,110 @@ export default class Controller {
   }
 
   async checkLogin() {
-    const response = await this.model.checkLogin();
-    return (response);
+    return (await this.model.checkLogin());
   }
 
   homePage() {
+    this.stopVideo();
     this.model.getImages(0)
     .then(data => {
-      console.log(data);
-      this.view.displayHomePage(data.images);
+      console.log(data.images);
+      if (data.images) {
+        const homeContainer = this.view.createElement('div', 'home-container');
+        data.images.forEach(image => {
+          const postContainer = this.view.createPost(image);
+          const interactSection = this.view.createElement('div', 'interact-container');
+          const likeSection = this.view.createElement('div', 'like-section');
+          const likeButton = this.view.createElementInDiv('img', 'like-button');
+          const unlikeButton = this.view.createElementInDiv('img', 'like-button');
+          likeButton.firstChild.src = '/assets/images/like.svg';
+          likeButton.firstChild.alt = 'Like Icon';
+          unlikeButton.firstChild.src = '/assets/images/unlike.svg';
+          unlikeButton.firstChild.alt = 'Unlike Icon';
+
+          const commentSection = this.view.createElementInDiv('form', 'comment-section');
+          const commentInput = this.view.createElement('input');
+          commentInput.placeholder = 'Add a comment';
+          commentInput.id = 'addComment'
+          const sendComment = this.view.createElement('button');
+          sendComment.textContent = 'Send';
+
+          let commentSize = image.comments.length;
+          const openComment = this.view.createElement('a', 'link');
+          if (commentSize) {
+            openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
+            commentSection.append(openComment);
+          }
+
+          
+          commentSection.firstChild.addEventListener('submit', (event) => {
+            event.preventDefault();
+            this.model.commentImage(image.id, commentInput.value)
+            .then((data) => {
+              if (data.status === 'success') {
+                commentInput.value = '';
+                commentSize++;
+                openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
+                if (commentSize === 1)
+                 commentSection.append(openComment);
+              }
+            })
+          })
+
+          const comments = this.view.createElementInDiv('p')
+          
+          let commentOpened = false;
+          openComment.addEventListener('click', () => {
+            commentOpened = !commentOpened;
+            
+              
+          })
+
+
+          commentSection.firstChild.append(commentInput, sendComment);
+      
+          let likes = image.like_count;
+      
+          const likesCounter = this.view.createElement('p');
+          likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
+      
+          likeSection.append(image.liked_by_user ? unlikeButton : likeButton, likesCounter);
+      
+          interactSection.append(likeSection, commentSection);
+          likeButton.addEventListener('click', () => {
+            this.model.likeImage(image.id)
+            .then((data) => {
+              if (data.status === 'success') {
+                likesCounter.innerText = `${++likes} like${likes > 1 ? 's' : ''}`;
+                likeSection.firstChild.replaceWith(unlikeButton);
+              }
+            })
+          })
+          unlikeButton.addEventListener('click', () => {
+            console.log(image.id);
+            this.model.likeImage(image.id)
+            .then((data) => {
+              console.log(data);
+              if (data.status === 'success') {
+                likeSection.firstChild.replaceWith(likeButton);
+                likesCounter.innerText = `${--likes} like${likes > 1 ? 's' : ''}`;
+              }
+            })
+          })
+          postContainer.append(interactSection);
+          homeContainer.append(postContainer);
+        });
+        this.view.mainContent.replaceChildren(homeContainer);
+      }
+      else
+        this.view.displayEmptyHomePage();
     })
   }
 
   registerPage() {
-    this.checkLogin().then(logged => {
+    this.stopVideo();
+    this.checkLogin()
+    .then(logged => {
       if (!logged)
         this.view.displaySignupPage();
       else
@@ -53,11 +142,13 @@ export default class Controller {
   }
   
   activateRegisterPage() {
+    this.stopVideo();
     this.model.verifyRegister()
     .then(data => this.view.displayDataSuccessPage(data));
   }
 
   passwordResetPage() {
+    this.stopVideo();
     this.model.verifyPasswordResetToken()
     .then(data => {
       if (data.success) {
@@ -89,6 +180,7 @@ export default class Controller {
 
 
   loginPage() {
+    this.stopVideo();
     this.checkLogin().then(logged => {
       if (!logged)
         this.view.displayLoginPage();
@@ -101,12 +193,15 @@ export default class Controller {
     this.checkLogin()
     .then(logged => {
       this.view.displayEditingPage(logged);
-      this.model.videoStream()
-      .then(stream => {
-        this.view.webcamPreview.innerHTML = `<video autoplay class='edit-area'></video>`;
-        this.view.webcamPreview.firstChild.srcObject = stream;
-      })
-      .catch(() => {});
+      if (!this.stream) {
+        this.model.startVideo()
+        .then(stream => {
+          this.view.webcamPreview.innerHTML = `<video autoplay class='edit-area'></video>`;
+          this.view.webcamPreview.firstChild.srcObject = stream;
+          this.stream = stream;
+        })
+        .catch(() => {})
+      }
       this.model.getUserImages(this.currentOffset)
       .then(thumbnails => {
         if (thumbnails?.images) {
@@ -116,18 +211,20 @@ export default class Controller {
           this.view.sideSection.addEventListener('scroll', this.boundHandleScroll);
         }
       })
-      .catch(e => console.log(e));
     });
   }
 
   settingsPage() {
+    this.stopVideo();
     this.model.getUserInfo()
     .then(data => {
-        this.view.displaySettingsPage(data);
+      this.view.displaySettingsPage(data);
+      if (data.success) {
         this.view.changeUsernameButton.addEventListener('click', this.changeUsernameModel.bind(this));
         this.view.changeEmailButton.addEventListener('click', this.changeEmailModel.bind(this));
         this.view.resetPassword.firstChild.addEventListener('click', this.resetPasswordModel.bind(this));
         this.view.notifications.addEventListener('change', this.toggleNotificationsModel.bind(this));
+      }
     })
   }
 
@@ -206,6 +303,7 @@ export default class Controller {
   }
 
   notFoundPage() {
+    this.stopVideo();
     this.view.displayNotFoundPage();
   }
 
@@ -234,7 +332,6 @@ export default class Controller {
   }
 
   forgotPasswordModel(event) {
-    console.log(this.view.forgotPasswordEmail.firstChild.value)
     event.preventDefault();
     this.model.forgotPassword(this.view.forgotPasswordEmail.firstChild.value)
     .then(data => {
@@ -247,7 +344,9 @@ export default class Controller {
 
   logoutModel() {
     this.model.logout()
-    .then(() => this.view.displayHeaderButtons(false));
+    .then(() => {
+      this.view.displayHeaderButtons(false);
+    });
   }
 
   uploadImage() {
@@ -260,10 +359,10 @@ export default class Controller {
         else {
           const reader = new FileReader();
           reader.onload = () => {
+            this.stopVideo();
             this.view.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" class="edit-area">`;
           }
           reader.readAsDataURL(file);
-          this.view.webcamPreview.style.maxHeight = '';
         }
       }
       else
@@ -274,7 +373,6 @@ export default class Controller {
       return file.type === 'image/gif' || file.type === 'image/png' || file.type === 'image/jpg' || file.type === 'image/jpeg';
     }
   }
-  
 
   captureModel() {
     const pastedImage = this.view.getElement('.pasted-image');
@@ -314,5 +412,13 @@ export default class Controller {
       return canvas.toDataURL('image/jpeg');
     }
     return null;
+  }
+
+  stopVideo() {
+    if (this.stream) {
+      const tracks = this.stream.getTracks();
+      tracks.forEach(track => track.stop());
+      this.stream = null;
+    }
   }
 }
