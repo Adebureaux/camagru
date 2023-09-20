@@ -201,7 +201,7 @@ export default class Model {
         body: formData,
     })
     .then(response => response)
-    .catch(error => console.error('Fetch error:', error));
+    .catch(() => {});
   }
 
   async getUserImages(currentOffset) {

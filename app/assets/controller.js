@@ -37,7 +37,6 @@ export default class Controller {
     this.stopVideo();
     this.model.getImages(0)
     .then(data => {
-      console.log(data.images);
       if (data.images) {
         const homeContainer = this.view.createElement('div', 'home-container');
         data.images.forEach(image => {
@@ -57,35 +56,50 @@ export default class Controller {
           commentInput.id = 'addComment'
           const sendComment = this.view.createElement('button');
           sendComment.textContent = 'Send';
+          const commentDisplay = this.view.createElement('div');
 
           let commentSize = image.comments.length;
           const openComment = this.view.createElement('a', 'link');
+          openComment.classList.add('ml-md');
           if (commentSize) {
             openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
-            commentSection.append(openComment);
+            commentSection.append(openComment, commentDisplay);
           }
-
+          
+          let commentOpened = false;
           
           commentSection.firstChild.addEventListener('submit', (event) => {
             event.preventDefault();
             this.model.commentImage(image.id, commentInput.value)
             .then((data) => {
-              if (data.status === 'success') {
+              if (data.success) {
+                if (commentOpened) {
+                  const comment = this.view.createElement('p', 'ml-md');
+                  comment.innerText = commentInput.value;
+                  commentDisplay.append(comment);
+                }
+                image.comments.push({comment_text: commentInput.value});
                 commentInput.value = '';
                 commentSize++;
                 openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
                 if (commentSize === 1)
-                 commentSection.append(openComment);
+                  commentSection.append(openComment, commentDisplay);
               }
             })
           })
 
-          const comments = this.view.createElementInDiv('p')
-          
-          let commentOpened = false;
           openComment.addEventListener('click', () => {
             commentOpened = !commentOpened;
-            
+            if (commentOpened) {
+              for (let i = 0; i < image.comments.length; i++) {
+                const comment = this.view.createElement('p', 'ml-md');
+                comment.innerText = image.comments[i].comment_text;
+                commentDisplay.append(comment);
+              }
+            }
+            else
+              commentDisplay.innerHTML = '';
+
               
           })
 
@@ -103,18 +117,16 @@ export default class Controller {
           likeButton.addEventListener('click', () => {
             this.model.likeImage(image.id)
             .then((data) => {
-              if (data.status === 'success') {
+              if (data.success) {
                 likesCounter.innerText = `${++likes} like${likes > 1 ? 's' : ''}`;
                 likeSection.firstChild.replaceWith(unlikeButton);
               }
             })
           })
           unlikeButton.addEventListener('click', () => {
-            console.log(image.id);
             this.model.likeImage(image.id)
             .then((data) => {
-              console.log(data);
-              if (data.status === 'success') {
+              if (data.success) {
                 likeSection.firstChild.replaceWith(likeButton);
                 likesCounter.innerText = `${--likes} like${likes > 1 ? 's' : ''}`;
               }
@@ -249,7 +261,6 @@ export default class Controller {
     this.model.changeEmail(this.view.changeEmail.firstChild.value)
     .then(data => {
       if (data.success) {
-        console.log('success');
         this.view.changeEmailError.firstChild.style.color = 'green';
         this.view.changeEmailError.firstChild.textContent = 'Email successfully changed.';
         this.view.userData.email = this.view.changeEmail.firstChild.value;

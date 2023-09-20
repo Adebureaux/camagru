@@ -19,25 +19,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             if ($image) {
                 $image['image_data'] = base64_encode($image['image_data']);
                 $response = [
-                    'status' => 'success',
+                    'success' => true,
                     'message' => 'Image fetched successfully.',
                     'image' => $image
                 ];
-            } else {
+            }
+            else {
                 $response = [
-                    'status' => 'info',
+                    'success' => false,
                     'message' => 'No images found for this user.'
                 ];
             }
-        } catch(PDOException $e) {
+        }
+        catch(PDOException $e) {
             $response = [
-                'status' => 'error',
+                'success' => false,
                 'message' => 'Error while fetching the image: ' . $e->getMessage()
             ];
         }
-    } else {
+    }
+    else {
         $response = [
-            'status' => 'error',
+            'success' => false,
             'message' => 'Please log in to view your image.'
         ];
     }

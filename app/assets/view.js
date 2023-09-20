@@ -18,7 +18,7 @@ export default class View {
     this.galleryLink = this.createElement('a', 'green');
     this.createLinkButton(this.galleryLink, '/', 'Home');
     this.editingLink = this.createElement('a', 'green');
-    this.createLinkButton(this.editingLink, '/editing', 'Editing');
+    this.createLinkButton(this.editingLink, '/editing', 'Edit');
     this.loginLink = this.createElement('a');
     this.createLinkButton(this.loginLink, '/login', 'Log In');
     this.signupLink = this.createElement('a');
@@ -68,13 +68,13 @@ export default class View {
   }
 
   displaySignupSuccess() {
-    const confirm = this.createElementInDiv('h2');
+    const confirm = this.createElementInDiv('h2', 'align-form');
     confirm.firstChild.textContent = 'We sent you an email.';
     const instructions = this.createElement('h3');
     instructions.textContent = 'Please click on the provided link in the email to confirm your account.';
     confirm.appendChild(instructions);
-    this.signupForm.replaceChildren(confirm);
-    this.mainContent.replaceChildren(this.signupForm);
+    // this.signupForm.replaceChildren(confirm);
+    this.mainContent.replaceChildren(confirm);
   }
 
   displaySignupError(data) {
@@ -106,7 +106,6 @@ export default class View {
 
   displaySettingsPage(user) {
     if (user.success) {
-      console.log(user);
       this.userData = user.data;
 
       const title = this.createElementInDiv('h1');
@@ -235,7 +234,7 @@ export default class View {
   }
 
   editingContainerSizing() {
-    if (window.innerWidth <= 778)
+    if (window.innerWidth <= 860)
       this.editing.style.height = 'auto';
     else
       this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
@@ -306,7 +305,6 @@ export default class View {
   
     const previewRect = this.webcamPreview.firstChild?.getBoundingClientRect();
 
-    console.log(previewRect);
     if (!previewRect)
       return;
     

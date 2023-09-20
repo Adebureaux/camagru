@@ -45,13 +45,13 @@ if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
         $stmt->execute();
         
         $response = [
-            'status' => 'success',
+            'success' => true,
             'message' => 'Image added successfully.'
         ];
     }
     catch(PDOException $e) {
         $response = [
-            'status' => 'error',
+            'success' => false,
             'message' => 'Error while adding the image: ' . $e->getMessage()
         ];
     }
@@ -62,7 +62,7 @@ if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
 }
 else {
     $response = [
-        'status' => 'error',
+        'success' => false,
         'message' => 'Please select an image to upload.'
     ];
 }

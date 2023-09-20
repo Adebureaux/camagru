@@ -98,9 +98,10 @@ input[type="checkbox"]{
 }
 
 .post-container {
-  border: 1px solid rgb(255, 0, 0);
+  border: 5px solid black;
   text-align: center;
-  width: 60vw;
+  width: 50%;
+  margin: 10px;
 }
 
 .image-container {
@@ -113,9 +114,10 @@ input[type="checkbox"]{
 }
 
 .img-container img {
+  display: block;
   width: 100%;
-  max-width: 80%;
-  max-height: 100%;
+  max-height: 100vh;
+  overflow: hidden;
   object-fit: cover;
 }
 
@@ -124,7 +126,6 @@ input[type="checkbox"]{
 }
 
 .like-section {
-  border: 1px solid rgb(0, 255, 106);
   display: flex;
 }
 
@@ -140,7 +141,7 @@ input[type="checkbox"]{
 }
 
 .comment-section {
-  border: 1px solid rgb(4, 0, 255);
+  padding-left: 2px;
 }
 
 .wrapper {
@@ -203,6 +204,7 @@ input[type="checkbox"]{
 
 .full-lenght {
   width: 275px;
+  margin-bottom: 10px;
 }
 
 .settings-title {
@@ -215,6 +217,10 @@ input[type="checkbox"]{
   color: blue;
   text-decoration: underline;
   cursor: pointer;
+}
+
+.ml-md {
+  margin: 12px;
 }
 
 
@@ -376,12 +382,12 @@ input[type="checkbox"]{
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-#addComment {
+/* #addComment {
   margin: 0;
-}
+} */
 
 
-@media only screen and (max-width: 778px) {
+@media only screen and (max-width: 860px) {
   header {
     padding: 8px;
   }
@@ -439,7 +445,7 @@ input[type="checkbox"]{
   }
   
   .editing-main {
-    min-height: 55vh;
+    min-height: 50vh;
   }
 }
 
@@ -453,7 +459,7 @@ input[type="checkbox"]{
   }
   
   .post-container {
-    width: 100%;
+    width: 95%;
   }
 }
 

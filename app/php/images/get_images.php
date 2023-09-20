@@ -58,19 +58,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
             }
 
             $response = [
-                'status' => 'success',
+                'success' => true,
                 'message' => 'Images with comments fetched successfully.',
                 'images' => $images
             ];
         } else {
             $response = [
-                'status' => 'no-more-images',
+                'success' => false,
                 'message' => 'No more images to fetch.'
             ];
         }
     } catch(PDOException $e) {
         $response = [
-            'status' => 'error',
+            'success' => false,
             'message' => 'Error while fetching the images: ' . $e->getMessage()
         ];
     }
