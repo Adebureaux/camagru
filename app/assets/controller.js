@@ -37,10 +37,16 @@ export default class Controller {
     this.stopVideo();
     this.model.getImages(0)
     .then(data => {
+      console.log(data);
       if (data.images) {
         const homeContainer = this.view.createElement('div', 'home-container');
         data.images.forEach(image => {
           const postContainer = this.view.createPost(image);
+
+          const username = this.view.createElementInDiv('p', 'post-username');
+          username.firstChild.innerText = image.username;
+          postContainer.prepend(username);
+
           const interactSection = this.view.createElement('div', 'interact-container');
           const likeSection = this.view.createElement('div', 'like-section');
           const likeButton = this.view.createElementInDiv('img', 'like-button');
@@ -75,10 +81,13 @@ export default class Controller {
               if (data.success) {
                 if (commentOpened) {
                   const comment = this.view.createElement('p', 'ml-md');
-                  comment.innerText = commentInput.value;
-                  commentDisplay.append(comment);
+                  const username = this.view.createElement('span', 'bold');
+                  username.innerText = data.username;
+                  comment.innerText = ' : ' + commentInput.value;
+                  comment.prepend(username);
+                  commentDisplay.prepend(comment);
                 }
-                image.comments.push({comment_text: commentInput.value});
+                image.comments.push({comment_text: commentInput.value, username: data.username});
                 commentInput.value = '';
                 commentSize++;
                 openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
@@ -93,14 +102,15 @@ export default class Controller {
             if (commentOpened) {
               for (let i = 0; i < image.comments.length; i++) {
                 const comment = this.view.createElement('p', 'ml-md');
-                comment.innerText = image.comments[i].comment_text;
-                commentDisplay.append(comment);
+                const username = this.view.createElement('span', 'bold');
+                username.innerText = image.comments[i].username;
+                comment.innerText = ' : ' + image.comments[i].comment_text;
+                comment.prepend(username);
+                commentDisplay.prepend(comment);
               }
             }
             else
               commentDisplay.innerHTML = '';
-
-              
           })
 
 
@@ -208,8 +218,8 @@ export default class Controller {
       if (!this.stream) {
         this.model.startVideo()
         .then(stream => {
-          this.view.webcamPreview.innerHTML = `<video autoplay class='edit-area'></video>`;
-          this.view.webcamPreview.firstChild.srcObject = stream;
+          this.view.editArea.innerHTML = `<video autoplay></video>`;
+          this.view.editArea.firstChild.srcObject = stream;
           this.stream = stream;
         })
         .catch(() => {})
@@ -365,19 +375,19 @@ export default class Controller {
       const file = this.view.uploadButton.files[0];
       if (file && isImageFile(file)) {
         if (file.size > 1048576) {
-          this.view.webcamPreview.innerHTML = '<p class="error">File size must be less than 1 MB. Please select a smaller file.<p>';
+          this.view.editArea.innerHTML = '<p class="error">File size must be less than 1 MB. Please select a smaller file.<p>';
         }
         else {
           const reader = new FileReader();
           reader.onload = () => {
             this.stopVideo();
-            this.view.webcamPreview.innerHTML = `<img src="${reader.result}" alt="Uploaded Image" class="edit-area">`;
+            this.view.editArea.innerHTML = `<img src="${reader.result}" alt="Uploaded Image">`;
           }
           reader.readAsDataURL(file);
         }
       }
       else
-        this.view.webcamPreview.innerHTML = '<p class="error">Invalid image file. Please select a GIF, PNG, JPG or JPEG file.</p>';
+        this.view.editArea.innerHTML = '<p class="error">Invalid image file. Please select a GIF, PNG, JPG or JPEG file.</p>';
     });
   
     function isImageFile(file) {
@@ -389,7 +399,7 @@ export default class Controller {
     const pastedImage = this.view.getElement('.pasted-image');
     if (pastedImage) {
       this.view.captureButton.disabled = true;
-      this.model.capture(this.view.webcamPreview, this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)})
+      this.model.capture(this.view.editArea, this.captureImage(), pastedImage.src, {x: parseFloat(pastedImage.style.left), y: parseFloat(pastedImage.style.top)})
       .then(() => {
         fetch('/php/images/get_current_image.php', {
           method: 'GET',
@@ -408,7 +418,7 @@ export default class Controller {
   }
 
   captureImage() {
-    const content = this.view.webcamPreview.firstChild;
+    const content = this.view.editArea.firstChild;
 
     if (content.tagName === 'IMG')
       return content.src;

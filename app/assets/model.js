@@ -1,4 +1,18 @@
 export default class Model {
+  async get_username(id) {
+    const response = await fetch(`/php/auth/get_username.php`, {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            user_id: id
+        })
+    });
+    const data = await response.json();
+    return data.username;
+  }
+
   async register(username, email, password) {
     return fetch('/php/auth/register.php', {
       method: 'POST',

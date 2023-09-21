@@ -249,11 +249,13 @@ export default class View {
 
     this.editingMain = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
+    this.editArea = this.createElement('div', 'edit-area');
+    this.webcamPreview.append(this.editArea);
     this.superposableImages = this.createElement('div', 'superposable-images');
     this.uploadButton.type = 'file';
 
     this.addSuperposableImages(['/assets/images/superposable_1.png', '/assets/images/superposable_2.png', '/assets/images/superposable_3.png']);
-    this.webcamPreview.addEventListener('click', this.onWebcamPreviewClick.bind(this));
+    this.editArea.addEventListener('click', this.onEditAreaClick.bind(this));
 
     this.editingButtons = this.createElement('div', 'editing-buttons');
     this.editingButtons.append(this.uploadButton, this.captureButton, this.superposableImages);
@@ -292,8 +294,8 @@ export default class View {
     this.sid = selectedImage.id;
   }
 
-  onWebcamPreviewClick(event) {
-    if (this.webcamPreview.firstChild && this.webcamPreview.firstChild.tagName === 'P')
+  onEditAreaClick(event) {
+    if (this.editArea.firstChild && this.editArea.firstChild.tagName === 'P')
       return;
 
     const selectedImage = this.superposableImages.querySelector('.selected');
@@ -303,7 +305,7 @@ export default class View {
     const previous = this.getElement('.pasted-image');
     previous?.remove();
   
-    const previewRect = this.webcamPreview.firstChild?.getBoundingClientRect();
+    const previewRect = this.editArea.firstChild?.getBoundingClientRect();
 
     if (!previewRect)
       return;
@@ -326,7 +328,7 @@ export default class View {
     this.pastedImage[this.sid].style.position = 'absolute';
     this.pastedImage[this.sid].style.left = `${centerX}%`;
     this.pastedImage[this.sid].style.top = `${centerY}%`;
-    this.webcamPreview.appendChild(this.pastedImage[this.sid]);
+    this.editArea.appendChild(this.pastedImage[this.sid]);
     this.captureButton.disabled = false;
   }    
   

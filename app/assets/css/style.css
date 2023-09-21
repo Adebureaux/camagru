@@ -104,6 +104,17 @@ input[type="checkbox"]{
   margin: 10px;
 }
 
+.post-username {
+  text-align: start;
+  margin: 12px;
+  font-weight: bold;
+  font-size: 1.2rem;
+}
+
+.bold {
+  font-weight: bold;
+}
+
 .image-container {
   width: 100%;
   height: 400px;
@@ -293,24 +304,31 @@ input[type="checkbox"]{
   align-items: center;
   border: 5px solid #000;
   box-sizing: border-box;
-  width: 55%;
+  max-width: 80%;
 }
 
 .webcam-preview {
-  height: 100%;
   position: relative;
-  overflow: hidden;
-}
-
-.webcam-preview :first-child {
-  display: block;
-  box-sizing: border-box;
+  height: 100%;
+  width: 100%;
 }
 
 .edit-area {
-  width: 100%;
   height: 100%;
+  width: 100%;
 }
+
+.edit-area :first-child {
+  height: 100%;
+  width: 100%;
+}
+
+
+/* .edit-area :first-child {
+  display: block;
+  height: 100%;
+  width: 100%;
+} */
 
 .editing-side {
   width: 30%;
@@ -342,7 +360,7 @@ input[type="checkbox"]{
 .superposable-images img {
   margin: 2px;
   padding: 2px;
-  height: -webkit-fill-available;
+  height: 87%;
 }
 
 .selected {
@@ -356,7 +374,7 @@ input[type="checkbox"]{
 }
 
 .editing-buttons {
-  position: sticky;
+  position: absolute;
   display: flex;
   align-items: center;
   background-color: grey;
@@ -364,6 +382,7 @@ input[type="checkbox"]{
   box-sizing: border-box;
   height: 70px;
   width: 100%;
+  bottom: 0;
 }
 
 .capture-button {

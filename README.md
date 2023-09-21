@@ -1,13 +1,7 @@
 # Todo
-## Client
-- Create an app in the browser with plain JavaScript, and get familiar with the concepts of MVC.
-- Use this guide to get the base concept: https://www.taniarascia.com/javascript-mvc-todo-app/
-
-
-## Server
-
-## General
-
+=> Rework le système de capture d'image sur le front et sur le back pour qu'il capture l'image sans la déformer, et en respectant la position du curseur. Il faut que cela fonction sur chrome ET sur firefox
+==> Ajouter une croix au survol sur la partie edit pour donner la possibilité de supprimer les images.
+==> Pagination home
 
 # Dependencies
 - Docker

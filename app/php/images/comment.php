@@ -44,6 +44,12 @@ try {
     $stmt->execute();
     $imageOwner = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    $stmt = $pdo->prepare("SELECT username FROM users WHERE id = :user_id");
+    $stmt->bindParam(':user_id', $user_id);
+    $stmt->execute();
+    $commenter = $stmt->fetch(PDO::FETCH_ASSOC);
+    $commenter_username = $commenter ? $commenter['username'] : null;
+
     if ($imageOwner) {
         if ($imageOwner['notification'] == 1) {
             $to = $imageOwner['email'];
@@ -52,18 +58,19 @@ try {
             $headers = 'From: camagruft@gmail.com';
 
             $isEmailSent = mail($to, $subject, $message, $headers);
-
             if ($isEmailSent) {
-                echo json_encode(['success' => true, 'message' => 'Comment added successfully. Email notification sent to image owner.']);
+                echo json_encode(['success' => true, 'username' => $commenter_username, 'message' => 'Comment added successfully. Email notification sent to image owner.']);
             }
             else {
                 echo json_encode(['success' => false, 'message' => 'Comment added successfully, but email notification could not be sent to image owner.']);
             }
-        } else {
-            echo json_encode(['success' => true, 'message' => 'Comment added successfully. Email notification not sent as notification setting is not enabled.']);
+        } 
+        else {
+            echo json_encode(['success' => true, 'username' => $commenter_username, 'message' => 'Comment added successfully. Email notification not sent as notification setting is not enabled.']);
         }
-    } else {
-        echo json_encode(['success' => true, 'message' => 'Comment added successfully. Image owner not found for email notification.']);
+    }
+    else {
+        echo json_encode(['success' => true, 'username' => $commenter_username, 'message' => 'Comment added successfully. Image owner not found for email notification.']);
     }
 }
 catch (PDOException $e) {
