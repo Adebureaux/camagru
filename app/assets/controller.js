@@ -33,121 +33,141 @@ export default class Controller {
     return (await this.model.checkLogin());
   }
 
+  displayHomePage(data, pageSlider) {
+    const homeContainer = this.view.createElement('div', 'home-container');
+    data.images.forEach(image => {
+      const postContainer = this.view.createPost(image);
+
+      const username = this.view.createElementInDiv('p', 'post-username');
+      username.firstChild.innerText = image.username;
+      postContainer.prepend(username);
+
+      const interactSection = this.view.createElement('div', 'interact-container');
+      const likeSection = this.view.createElement('div', 'like-section');
+      const likeButton = this.view.createElementInDiv('img', 'like-button');
+      const unlikeButton = this.view.createElementInDiv('img', 'like-button');
+      likeButton.firstChild.src = '/assets/images/like.svg';
+      likeButton.firstChild.alt = 'Like Icon';
+      unlikeButton.firstChild.src = '/assets/images/unlike.svg';
+      unlikeButton.firstChild.alt = 'Unlike Icon';
+
+      const commentSection = this.view.createElementInDiv('form', 'comment-section');
+      const commentInput = this.view.createElement('input');
+      commentInput.placeholder = 'Add a comment';
+      commentInput.id = 'addComment'
+      const sendComment = this.view.createElement('button');
+      sendComment.textContent = 'Send';
+      const commentDisplay = this.view.createElement('div');
+
+      let commentSize = image.comments.length;
+      const openComment = this.view.createElement('a', 'link');
+      openComment.classList.add('ml-md');
+      if (commentSize) {
+        openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
+        commentSection.append(openComment, commentDisplay);
+      }
+      
+      let commentOpened = false;
+      
+      commentSection.firstChild.addEventListener('submit', (event) => {
+        event.preventDefault();
+        this.model.commentImage(image.id, commentInput.value)
+        .then((data) => {
+          if (data.success) {
+            if (commentOpened) {
+              const comment = this.view.createElement('p', 'ml-md');
+              const username = this.view.createElement('span', 'bold');
+              username.innerText = data.username;
+              comment.innerText = ' : ' + commentInput.value;
+              comment.prepend(username);
+              commentDisplay.prepend(comment);
+            }
+            image.comments.push({comment_text: commentInput.value, username: data.username});
+            commentInput.value = '';
+            commentSize++;
+            openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
+            if (commentSize === 1)
+              commentSection.append(openComment, commentDisplay);
+          }
+        })
+      })
+
+      openComment.addEventListener('click', () => {
+        commentOpened = !commentOpened;
+        if (commentOpened) {
+          for (let i = 0; i < image.comments.length; i++) {
+            const comment = this.view.createElement('p', 'ml-md');
+            const username = this.view.createElement('span', 'bold');
+            username.innerText = image.comments[i].username;
+            comment.innerText = ' : ' + image.comments[i].comment_text;
+            comment.prepend(username);
+            commentDisplay.prepend(comment);
+          }
+        }
+        else
+          commentDisplay.innerHTML = '';
+      })
+
+
+      commentSection.firstChild.append(commentInput, sendComment);
+  
+      let likes = image.like_count;
+  
+      const likesCounter = this.view.createElement('p');
+      likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
+  
+      likeSection.append(image.liked_by_user ? unlikeButton : likeButton, likesCounter);
+  
+      interactSection.append(likeSection, commentSection);
+      likeButton.addEventListener('click', () => {
+        this.model.likeImage(image.id)
+        .then((data) => {
+          if (data.success) {
+            likesCounter.innerText = `${++likes} like${likes > 1 ? 's' : ''}`;
+            likeSection.firstChild.replaceWith(unlikeButton);
+          }
+        })
+      })
+      unlikeButton.addEventListener('click', () => {
+        this.model.likeImage(image.id)
+        .then((data) => {
+          if (data.success) {
+            likeSection.firstChild.replaceWith(likeButton);
+            likesCounter.innerText = `${--likes} like${likes > 1 ? 's' : ''}`;
+          }
+        })
+      })
+      postContainer.append(interactSection);
+      homeContainer.append(postContainer);
+    });
+    homeContainer.append(pageSlider);
+    this.view.mainContent.replaceChildren(homeContainer);
+  }
+
   homePage() {
     this.stopVideo();
-    this.model.getImages(0)
-    .then(data => {
-      if (data.images) {
-        const homeContainer = this.view.createElement('div', 'home-container');
-        data.images.forEach(image => {
-          const postContainer = this.view.createPost(image);
-
-          const username = this.view.createElementInDiv('p', 'post-username');
-          username.firstChild.innerText = image.username;
-          postContainer.prepend(username);
-
-          const interactSection = this.view.createElement('div', 'interact-container');
-          const likeSection = this.view.createElement('div', 'like-section');
-          const likeButton = this.view.createElementInDiv('img', 'like-button');
-          const unlikeButton = this.view.createElementInDiv('img', 'like-button');
-          likeButton.firstChild.src = '/assets/images/like.svg';
-          likeButton.firstChild.alt = 'Like Icon';
-          unlikeButton.firstChild.src = '/assets/images/unlike.svg';
-          unlikeButton.firstChild.alt = 'Unlike Icon';
-
-          const commentSection = this.view.createElementInDiv('form', 'comment-section');
-          const commentInput = this.view.createElement('input');
-          commentInput.placeholder = 'Add a comment';
-          commentInput.id = 'addComment'
-          const sendComment = this.view.createElement('button');
-          sendComment.textContent = 'Send';
-          const commentDisplay = this.view.createElement('div');
-
-          let commentSize = image.comments.length;
-          const openComment = this.view.createElement('a', 'link');
-          openComment.classList.add('ml-md');
-          if (commentSize) {
-            openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
-            commentSection.append(openComment, commentDisplay);
-          }
-          
-          let commentOpened = false;
-          
-          commentSection.firstChild.addEventListener('submit', (event) => {
-            event.preventDefault();
-            this.model.commentImage(image.id, commentInput.value)
-            .then((data) => {
-              if (data.success) {
-                if (commentOpened) {
-                  const comment = this.view.createElement('p', 'ml-md');
-                  const username = this.view.createElement('span', 'bold');
-                  username.innerText = data.username;
-                  comment.innerText = ' : ' + commentInput.value;
-                  comment.prepend(username);
-                  commentDisplay.prepend(comment);
-                }
-                image.comments.push({comment_text: commentInput.value, username: data.username});
-                commentInput.value = '';
-                commentSize++;
-                openComment.innerText = `View ${commentSize > 1 ? 'all' : ''} ${commentSize} comment${commentSize > 1 ? 's' : ''}`;
-                if (commentSize === 1)
-                  commentSection.append(openComment, commentDisplay);
-              }
-            })
-          })
-
-          openComment.addEventListener('click', () => {
-            commentOpened = !commentOpened;
-            if (commentOpened) {
-              for (let i = 0; i < image.comments.length; i++) {
-                const comment = this.view.createElement('p', 'ml-md');
-                const username = this.view.createElement('span', 'bold');
-                username.innerText = image.comments[i].username;
-                comment.innerText = ' : ' + image.comments[i].comment_text;
-                comment.prepend(username);
-                commentDisplay.prepend(comment);
-              }
-            }
-            else
-              commentDisplay.innerHTML = '';
-          })
-
-
-          commentSection.firstChild.append(commentInput, sendComment);
-      
-          let likes = image.like_count;
-      
-          const likesCounter = this.view.createElement('p');
-          likesCounter.innerText = `${likes} like${likes > 1 ? 's' : ''}`;
-      
-          likeSection.append(image.liked_by_user ? unlikeButton : likeButton, likesCounter);
-      
-          interactSection.append(likeSection, commentSection);
-          likeButton.addEventListener('click', () => {
-            this.model.likeImage(image.id)
-            .then((data) => {
-              if (data.success) {
-                likesCounter.innerText = `${++likes} like${likes > 1 ? 's' : ''}`;
-                likeSection.firstChild.replaceWith(unlikeButton);
-              }
-            })
-          })
-          unlikeButton.addEventListener('click', () => {
-            this.model.likeImage(image.id)
-            .then((data) => {
-              if (data.success) {
-                likeSection.firstChild.replaceWith(likeButton);
-                likesCounter.innerText = `${--likes} like${likes > 1 ? 's' : ''}`;
-              }
-            })
-          })
-          postContainer.append(interactSection);
-          homeContainer.append(postContainer);
-        });
-        this.view.mainContent.replaceChildren(homeContainer);
-      }
-      else
+    // this.homeContainer.append();
+    let offset = 0;
+    this.model.getImagesNumber()
+    .then(res => {
+      if (!res.count)
         this.view.displayEmptyHomePage();
+      else {
+        const btnSlider = this.view.createElement('div', 'btn-slider');
+        for (let i = 1; i < res.count / 5; i++) {
+          const pageBtn = this.view.createElement('button');
+          pageBtn.innerText = i;
+          pageBtn.addEventListener('click', (event) => {
+            console.log((event.target.innerText - 1) * 5)
+            window.scrollTo(0, 0);
+            this.model.getImages((event.target.innerText - 1) * 5)
+            .then(data => this.displayHomePage(data, btnSlider))
+          })
+          btnSlider.append(pageBtn);
+        }
+        this.model.getImages(offset)
+        .then(data => this.displayHomePage(data, btnSlider))
+      }
     })
   }
 
@@ -202,7 +222,8 @@ export default class Controller {
 
   loginPage() {
     this.stopVideo();
-    this.checkLogin().then(logged => {
+    this.checkLogin()
+    .then(logged => {
       if (!logged)
         this.view.displayLoginPage();
       else

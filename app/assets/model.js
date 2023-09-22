@@ -229,12 +229,35 @@ export default class Model {
     .then(data => data);
   }
 
+  async getImagesNumber() {
+    return fetch('/php/images/get_images_number.php', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
   async getImages(currentOffset) {
     return fetch(`/php/images/get_images.php?offset=${currentOffset}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'
       },
+    })
+    .then(response => response.json())
+    .then(data => data);
+  }
+
+  async deleteImage(imageId) {
+    return fetch(`/php/images/delete_image.php`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ image_id: imageId })
     })
     .then(response => response.json())
     .then(data => data);

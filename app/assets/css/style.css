@@ -111,6 +111,16 @@ input[type="checkbox"]{
   font-size: 1.2rem;
 }
 
+.btn-slider {
+  text-align: center;
+}
+
+.btn-slider button {
+  padding: 6px;
+  margin: 3px;
+  border-radius: 0px;
+}
+
 .bold {
   font-weight: bold;
 }
@@ -118,10 +128,27 @@ input[type="checkbox"]{
 .image-container {
   width: 100%;
   height: 400px;
-  overflow: hidden;
+  position: relative;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.close-button {
+  position: absolute; /* Position absolue par rapport à l'élément parent */
+  top: 0; /* Aligner en haut */
+  right: 0; /* Aligner à droite */
+  background-color: rgba(0, 0, 0, 0.5); /* Fond de la croix (couleur semi-transparente) */
+  color: white; /* Couleur du texte */
+  padding: 4px 8px; /* Espace autour du texte */
+  font-size: 16px; /* Taille de la police */
+  cursor: pointer; /* Curseur de souris en forme de main */
+  opacity: 0; /* Initialement invisible */
+  transition: opacity 0.3s; /* Transition d'opacité fluide */
+}
+
+.image-container:hover .close-button {
+  opacity: 1;
 }
 
 .img-container img {
@@ -396,10 +423,6 @@ input[type="checkbox"]{
   background-color: rgba(0, 0, 0, 0.3);
 }
 
-/* #addComment {
-  margin: 0;
-} */
-
 
 @media only screen and (max-width: 860px) {
   header {
@@ -458,6 +481,11 @@ input[type="checkbox"]{
 
   .comment-section {
     text-align: center;
+  }
+
+  .btn-slider button {
+    padding: 3px;
+    margin: 1px;
   }
 }
 

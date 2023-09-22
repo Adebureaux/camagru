@@ -359,9 +359,11 @@ export default class View {
   }
 
   createThumbnail(image_data) {
-    const imageElement = document.createElement('img');
-    imageElement.classList.add('thumbnails');
-    imageElement.src = "data:image/jpeg;base64," + image_data;
+    const imageElement = this.createElementInDiv('img', 'thumbnails');
+    imageElement.firstChild.src = "data:image/jpeg;base64," + image_data;
+    const close = this.createElement('div', 'close-button');
+    close.innerText = 'X';
+    imageElement.append(close);
     return imageElement;
   }
 
