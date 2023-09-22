@@ -15,9 +15,9 @@ export default class View {
   }
 
   createHeaderButtons() {
-    this.galleryLink = this.createElement('a', 'green');
+    this.galleryLink = this.createElement('a');
     this.createLinkButton(this.galleryLink, '/', 'Home');
-    this.editingLink = this.createElement('a', 'green');
+    this.editingLink = this.createElement('a');
     this.createLinkButton(this.editingLink, '/editing', 'Edit');
     this.loginLink = this.createElement('a');
     this.createLinkButton(this.loginLink, '/login', 'Log In');
@@ -25,7 +25,7 @@ export default class View {
     this.createLinkButton(this.signupLink, '/signup', 'Sign Up');
     this.logoutLink = this.createElement('a', 'red');
     this.createLinkButton(this.logoutLink, '/', 'Log Out');
-    this.settingsLink = this.createElement('a', 'orange');
+    this.settingsLink = this.createElement('a');
     this.createLinkButton(this.settingsLink, '/settings', 'Settings');
   }
 
@@ -201,7 +201,6 @@ export default class View {
     const homeLink = this.createElement('a');
     this.createLinkButton(homeLink, '/', 'Home');
     homeLink.firstChild.classList.add('submit-button');
-    homeLink.firstChild.style.color = 'green';
     this.mainContent.replaceChildren(response);
   }
 
@@ -250,19 +249,18 @@ export default class View {
     this.editingMain = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     this.editArea = this.createElement('div', 'edit-area');
-    this.webcamPreview.append(this.editArea);
     this.superposableImages = this.createElement('div', 'superposable-images');
     this.uploadButton.type = 'file';
-
+    
     this.addSuperposableImages(['/assets/images/superposable_1.png', '/assets/images/superposable_2.png', '/assets/images/superposable_3.png']);
     this.editArea.addEventListener('click', this.onEditAreaClick.bind(this));
-
+    
     this.editingButtons = this.createElement('div', 'editing-buttons');
-    this.editingButtons.append(this.uploadButton, this.captureButton, this.superposableImages);
-    this.editingMain.append(this.webcamPreview, this.editingButtons);
+    this.editingButtons.append(this.uploadButton, this.captureButton);
+    this.editingMain.append(this.webcamPreview, this.editingButtons, this.superposableImages);
     this.sideSection = this.createElement('div', 'editing-side');
-  
-  
+    
+    this.webcamPreview.append(this.editArea);
     this.editing.append(this.editingMain, this.sideSection);
   }
 
@@ -328,7 +326,7 @@ export default class View {
     this.pastedImage[this.sid].style.position = 'absolute';
     this.pastedImage[this.sid].style.left = `${centerX}%`;
     this.pastedImage[this.sid].style.top = `${centerY}%`;
-    this.editArea.appendChild(this.pastedImage[this.sid]);
+    this.editArea.append(this.pastedImage[this.sid]);
     this.captureButton.disabled = false;
   }    
   

@@ -1,5 +1,4 @@
 # Todo
-=> Rework le système de capture d'image sur le front et sur le back pour qu'il capture l'image sans la déformer, et en respectant la position du curseur. Il faut que cela fonction sur chrome ET sur firefox
 ==> Ajouter une croix au survol sur la partie edit pour donner la possibilité de supprimer les images.
 ==> Pagination home
 

@@ -37,7 +37,6 @@ export default class Controller {
     this.stopVideo();
     this.model.getImages(0)
     .then(data => {
-      console.log(data);
       if (data.images) {
         const homeContainer = this.view.createElement('div', 'home-container');
         data.images.forEach(image => {
@@ -281,6 +280,7 @@ export default class Controller {
         this.view.changeEmail.firstChild.value = this.view.userData.email;
       }
     })
+    .catch(() => {})
   }
 
   resetPasswordModel() {

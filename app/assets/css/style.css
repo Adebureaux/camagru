@@ -278,11 +278,7 @@ input[type="checkbox"]{
   background-color:red;
 }
 
-.orange button {
-  background-color:rgb(204, 127, 33);
-}
-
-.green button {
+.green {
   background-color:green;
 }
 
@@ -304,31 +300,31 @@ input[type="checkbox"]{
   align-items: center;
   border: 5px solid #000;
   box-sizing: border-box;
-  max-width: 80%;
+  max-width: 65%;
 }
 
 .webcam-preview {
   position: relative;
+  overflow: hidden;
   height: 100%;
-  width: 100%;
+  min-width: 200px;
 }
 
 .edit-area {
   height: 100%;
-  width: 100%;
 }
 
 .edit-area :first-child {
+  object-fit: contain;
   height: 100%;
   width: 100%;
 }
 
-
-/* .edit-area :first-child {
-  display: block;
-  height: 100%;
-  width: 100%;
-} */
+@-moz-document url-prefix() {
+  .edit-area :first-child {
+    object-fit: fill;
+  }
+}
 
 .editing-side {
   width: 30%;
@@ -351,8 +347,9 @@ input[type="checkbox"]{
 }
 
 .superposable-images {
+  flex-direction: column;
+  display: flex;
   position: absolute;
-  height: 100%;
   top: 0;
   right: 0;
 }
@@ -360,7 +357,8 @@ input[type="checkbox"]{
 .superposable-images img {
   margin: 2px;
   padding: 2px;
-  height: 87%;
+  width: 75px;
+  height: 75px;
 }
 
 .selected {
@@ -368,7 +366,6 @@ input[type="checkbox"]{
 }
 
 .error {
-  text-align: center;
   margin-right: 10vw;
   margin-left: 1vw;
 }
@@ -377,8 +374,6 @@ input[type="checkbox"]{
   position: absolute;
   display: flex;
   align-items: center;
-  background-color: grey;
-  border-top: 5px solid #000;
   box-sizing: border-box;
   height: 70px;
   width: 100%;
@@ -451,7 +446,9 @@ input[type="checkbox"]{
   }
 
   .editing-main {
+    max-width: 100%;
     width: 100%;
+    min-height: 50vh;
     margin-bottom: 10px;
   }
 
@@ -462,23 +459,16 @@ input[type="checkbox"]{
   .comment-section {
     text-align: center;
   }
-  
-  .editing-main {
-    min-height: 50vh;
-  }
 }
 
 @media only screen and (max-width: 500px) {
   .superposable-images img {
-    height: 30px;
-  }
-
-  .superposable-images {
-    top: 20%;
+    width: 50px;
+    height: 50px;
   }
   
   .post-container {
-    width: 95%;
+    width: 90%;
   }
 }
 
