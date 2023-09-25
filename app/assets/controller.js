@@ -205,7 +205,7 @@ export default class Controller {
   passwordResetModel(event) {
     event.preventDefault();
     if (this.view.newPassword.firstChild.value === this.view.confirmNewPassword.firstChild.value) {
-      this.model.forgotPassword(this.view.newPassword.firstChild.value)
+      this.model.passwordReset(this.view.newPassword.firstChild.value)
       .then(data => {
         if (data.success)
           this.view.displayDataSuccessPage(data);
@@ -213,9 +213,8 @@ export default class Controller {
           this.view.newPasswordErrorArea.firstChild.textContent = data.error;
       })
     }
-    else {
+    else
       this.view.newPasswordErrorArea.firstChild.textContent = 'Passwords does not match.';
-    }
     this.view.newPassword.firstChild.value = '';
     this.view.confirmNewPassword.firstChild.value = '';
   }

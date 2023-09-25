@@ -136,7 +136,7 @@ export default class View {
       this.resetPassword = this.createElementInDiv('button', 'align-flex');
       this.resetPassword.firstChild.textContent = 'Reset your password';
       this.resetPassword.firstChild.classList.add('full-lenght');
-      this.resetPasswordError = this.createElementInDiv('p', 'response-area'); 
+      this.resetPasswordError = this.createElementInDiv('p', 'response-area');
 
       this.notifications = this.createElementInDiv('input', 'align-flex');
       this.notifications.firstChild.setAttribute('type', 'checkbox');
@@ -186,6 +186,7 @@ export default class View {
     this.newPasswordButton.innerText = 'Send';
     this.newPasswordButton.type = 'submit';
     this.newPasswordErrorArea = this.createElementInDiv('p', 'response-area');
+    this.newPasswordErrorArea.style.paddingTop = '20px';
     this.newPasswordForm.replaceChildren(title, this.newPassword, this.confirmNewPassword, this.newPasswordButton, this.newPasswordErrorArea);
     this.mainContent.replaceChildren(this.newPasswordForm);
   }
