@@ -379,7 +379,7 @@ export default class View {
 
   async displayEmptyHomePage() {
     const title = this.createElement('h2', 'align-form');
-    title.textContent = 'Empty home';
+    title.textContent = 'No feed available.';
     this.mainContent.replaceChildren(title);
   }
   

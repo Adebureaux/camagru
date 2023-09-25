@@ -35,10 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         exit;
     }
 
-    $lastResetRequest = strtotime($user['last_reset_request']);
-    if ((time() - $lastResetRequest) < RESET_TIMEOUT) {
-        sendResponse(false, 'You already reset your password too soon, please wait before sending another request.');
-        exit;
+    if ($user['last_reset_request']) {
+      $lastResetRequest = strtotime($user['last_reset_request']);
+      if ((time() - $lastResetRequest) < RESET_TIMEOUT) {
+          sendResponse(false, 'You already reset your password too soon, please wait before sending another request.');
+          exit;
+      }
     }
     
     $username = $user['username'];
