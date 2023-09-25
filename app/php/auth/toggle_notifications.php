@@ -26,13 +26,15 @@ if (isset($data['state'])) {
             'success' => true,
             'message' => 'Notification setting updated successfully.'
         ]);
-    } else {
+    }
+    else {
         echo json_encode([
             'success' => false,
             'message' => 'Failed to update the notification setting.'
         ]);
     }
-} else {
+}
+else {
     echo json_encode([
         'success' => false,
         'message' => 'Invalid request.'

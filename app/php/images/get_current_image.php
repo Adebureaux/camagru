@@ -9,7 +9,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
         $user_id = $_SESSION['user_id'];
 
         try {
-            // Fetch the most recent image for the user
             $stmt = $pdo->prepare("SELECT * FROM images WHERE user_id = :id ORDER BY created_at DESC LIMIT 1");
             $stmt->bindParam(':id', $user_id);
             $stmt->execute();

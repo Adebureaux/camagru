@@ -5,10 +5,9 @@ session_start();
 $response = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
-    // Vérifier si l'utilisateur est connecté
-    if (isset($_SESSION['user_id'])) {
-        $user_id = $_SESSION['user_id'];
-    } else {
+    if (isset($_SESSION['user_id']))
+      $user_id = $_SESSION['user_id'];
+    else {
         $response = [
             'success' => false,
             'message' => 'You must be logged in to delete an image.'
@@ -17,39 +16,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'DELETE') {
         echo json_encode($response);
         exit;
     }
+    $request_data = file_get_contents('php://input');
+    $data = json_decode($request_data);
 
-    // Récupérer l'ID de l'image à supprimer depuis les paramètres de la requête
-    $image_id = $_GET['image_id'];
+    if (isset($data->image_id)) {
+      $image_id = $data->image_id;
 
-    // Vérifier si l'utilisateur est le propriétaire de l'image
-    $stmt = $pdo->prepare("SELECT user_id FROM images WHERE id = :image_id");
-    $stmt->bindParam(':image_id', $image_id, PDO::PARAM_INT);
-    $stmt->execute();
-    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+      $stmt = $pdo->prepare("SELECT user_id FROM images WHERE id = :image_id");
+      $stmt->bindParam(':image_id', $image_id, PDO::PARAM_INT);
+      $stmt->execute();
+      $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($result && $result['user_id'] == $user_id) {
-        // L'utilisateur est le propriétaire de l'image, supprimer l'image
-        $stmt = $pdo->prepare("DELETE FROM images WHERE id = :image_id");
-        $stmt->bindParam(':image_id', $image_id, PDO::PARAM_INT);
-        $stmt->execute();
+      if ($result && $result['user_id'] == $user_id) {
+          $stmt = $pdo->prepare("DELETE FROM images WHERE id = :image_id");
+          $stmt->bindParam(':image_id', $image_id, PDO::PARAM_INT);
+          $stmt->execute();
 
-        $response = [
-            'success' => true,
-            'message' => 'Image deleted successfully.'
-        ];
-    } else {
-        // L'utilisateur n'est pas autorisé à supprimer cette image
-        $response = [
-            'success' => false,
-            'message' => "You don't have permission to delete this image."
-        ];
+          $response = [
+              'success' => true,
+              'message' => 'Image deleted successfully.'
+          ];
+      }
+      else {
+          $response = [
+              'success' => false,
+              'message' => "You don't have permission to delete this image."
+          ];
+      }
     }
-} else {
-    $response = [
+    else {
+      $response = [
         'success' => false,
-        'message' => 'Invalid request method.'
+        'message' => 'Invalid object.'
     ];
-}
+    }
+  }
+  else {
+      $response = [
+          'success' => false,
+          'message' => 'Invalid request method.'
+      ];
+  }
 
 header('Content-Type: application/json');
 echo json_encode($response);

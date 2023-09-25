@@ -36,11 +36,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt = $pdo->prepare("UPDATE users SET email = :email WHERE id = :id");
     $result = $stmt->execute(['email' => $newEmail, 'id' => $_SESSION['user_id']]);
 
-    if ($result) {
-        sendResponse(true, 'Email updated successfully.');
-    } else {
-        sendResponse(false, 'Error updating email. Please try again.');
-    }
+    if ($result)
+      sendResponse(true, 'Email updated successfully.');
+    else
+      sendResponse(false, 'Error updating email. Please try again.');
 }
 
 function sendResponse($success, $message) {

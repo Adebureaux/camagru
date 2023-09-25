@@ -3,7 +3,7 @@ require_once '../db_connection.php';
 
 session_start();
 
-$max_size = 1048576; // Taille maximale en octets (1 MB)
+$max_size = 1048576;
 
 if (isset($_FILES['webcamImage'], $_FILES['superposableImage']) &&
     $_FILES['webcamImage']['error'] === UPLOAD_ERR_OK &&

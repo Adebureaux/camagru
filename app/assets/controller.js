@@ -146,7 +146,6 @@ export default class Controller {
 
   homePage() {
     this.stopVideo();
-    // this.homeContainer.append();
     let offset = 0;
     this.model.getImagesNumber()
     .then(res => {
@@ -155,13 +154,15 @@ export default class Controller {
       else {
         const btnSlider = this.view.createElement('div', 'btn-slider');
         for (let i = 1; i < res.count / 5; i++) {
-          const pageBtn = this.view.createElement('button');
+          const pageBtn = this.view.createElement('button', i === 1 ? 'selected' : '');
           pageBtn.innerText = i;
           pageBtn.addEventListener('click', (event) => {
-            console.log((event.target.innerText - 1) * 5)
             window.scrollTo(0, 0);
+            const selected = document.querySelector('.selected');
+            selected.classList.remove('selected');
+            pageBtn.classList.toggle('selected');
             this.model.getImages((event.target.innerText - 1) * 5)
-            .then(data => this.displayHomePage(data, btnSlider))
+            .then(data => this.displayHomePage(data, btnSlider));
           })
           btnSlider.append(pageBtn);
         }

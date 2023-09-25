@@ -12,7 +12,8 @@ try {
             'message' => 'Number of rows fetched successfully.',
             'count' => $count
         ];
-    } else {
+    }
+    else {
         $response = [
             'success' => false,
             'message' => 'No rows found in the table.'

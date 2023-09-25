@@ -11,8 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
 
   if (isset($_SESSION['user_id'])) {
       $user_id = $_SESSION['user_id'];
-  } else {
-      $user_id = null; // Utilisateur non connecté
+  }
+  else {
+      $user_id = null;
   }
 
   try {
@@ -68,7 +69,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
               'message' => 'Images with comments fetched successfully.',
               'images' => $images
           ];
-      } else {
+      }
+      else {
           $response = [
               'success' => false,
               'message' => 'No more images to fetch.'

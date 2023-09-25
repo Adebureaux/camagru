@@ -178,7 +178,6 @@ export default class Model {
   }
 
   async capture(imgElement, imgData, superposableImg, position) {
-    // Create a FormData object
     const formData = new FormData();
 
     const imgWidth = imgElement.offsetWidth;
@@ -188,7 +187,6 @@ export default class Model {
         height: imgHeight
     };
 
-    // Convert Base64 image to blob
     const byteString = atob(imgData.split(',')[1]);
     const arrayBuffer = new ArrayBuffer(byteString.length);
     const int8Array = new Uint8Array(arrayBuffer);
@@ -197,7 +195,6 @@ export default class Model {
     }
     const blob = new Blob([int8Array], { type: 'image/jpeg' });
 
-    // Append the image blob and the superposable image
     formData.append('webcamImage', blob);
 
     const response = await fetch(superposableImg);
@@ -209,7 +206,6 @@ export default class Model {
     formData.append('position', JSON.stringify(position));
     formData.append('originalDimensions', JSON.stringify(originalDimensions));
 
-    // Send the request
     return fetch('/php/images/save_image.php', {
         method: 'POST',
         body: formData,

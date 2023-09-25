@@ -16,7 +16,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                     'success' => true,
                     'username' => $result['username']
                 ];
-            } else {
+            }
+            else {
                 $response = [
                     'success' => false,
                     'message' => 'User not found with the provided user_id.'
@@ -28,13 +29,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'GET') {
                 'message' => 'Database error: ' . $e->getMessage()
             ];
         }
-    } else {
+    }
+    else {
         $response = [
             'success' => false,
             'message' => 'Please provide a user_id.'
         ];
     }
-} else {
+}
+else {
     $response = [
         'success' => false,
         'message' => 'Invalid request method.'

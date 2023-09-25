@@ -4,13 +4,12 @@ require_once '../db_connection.php';
 session_start();
 $response = [];
 
-const IMAGES_PER_PAGE = 10; // Number of images to return per request
+const IMAGES_PER_PAGE = 10;
 
 if ($_SERVER['REQUEST_METHOD'] === 'GET') {
     if (isset($_SESSION['user_id'])) {
         $user_id = $_SESSION['user_id'];
         
-        // Get offset from request or default to 0
         $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 
         try {

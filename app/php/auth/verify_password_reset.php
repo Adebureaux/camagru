@@ -15,7 +15,8 @@ $count = $stmt->fetchColumn();
 
 if ($count > 0) {
     sendResponse(true, 'Token is valid.');
-} else {
+}
+else {
     sendResponse(false, 'Invalid or expired token.');
 }
 

@@ -1,5 +1,6 @@
 export default class View {
-  constructor() {
+  constructor(model) {
+    this.model = model;
     this.app = this.getElement('#root');
     this.createHeaderButtons();
     this.createSignupPage();
@@ -73,7 +74,6 @@ export default class View {
     const instructions = this.createElement('h3');
     instructions.textContent = 'Please click on the provided link in the email to confirm your account.';
     confirm.appendChild(instructions);
-    // this.signupForm.replaceChildren(confirm);
     this.mainContent.replaceChildren(confirm);
   }
 
@@ -241,11 +241,11 @@ export default class View {
 
   createEditing() {
     this.editing = this.createElement('div', 'editing-container');
-
+    
     this.editingContainerSizing();
 
     window.addEventListener('resize', this.editingContainerSizing.bind(this));
-
+    
     this.editingMain = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
     this.editArea = this.createElement('div', 'edit-area');
@@ -348,21 +348,31 @@ export default class View {
 
   displayThumbnails(thumbnails) {
     for (const thumbnail of thumbnails) {
-      this.sideSection.append(this.createThumbnail(thumbnail.image_data));
+      this.sideSection.append(this.createThumbnail(thumbnail.image_data, thumbnail.id));
       this.sideSection.append(this.createElement('hr', 'sep'));
     }
   }
 
   instantThumbnail(thumbnail) {
     this.sideSection.prepend(this.createElement('hr', 'sep'));
-    this.sideSection.prepend(this.createThumbnail(thumbnail.image_data));
+    this.sideSection.prepend(this.createThumbnail(thumbnail.image_data, thumbnail.id));
   }
 
-  createThumbnail(image_data) {
+  createThumbnail(image_data, id) {
     const imageElement = this.createElementInDiv('img', 'thumbnails');
     imageElement.firstChild.src = "data:image/jpeg;base64," + image_data;
     const close = this.createElement('div', 'close-button');
     close.innerText = 'X';
+    close.addEventListener('click', () => {
+      this.model.deleteImage(id)
+      .then((data) => {
+        if (data.success) {
+          imageElement.remove();
+          const sep = document.querySelector('.sep');
+          sep.remove();
+        }
+      })
+    });
     imageElement.append(close);
     return imageElement;
   }
