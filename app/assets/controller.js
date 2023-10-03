@@ -231,6 +231,20 @@ export default class Controller {
     })
   }
 
+  toDataURL(url, callback) {
+    var xhr = new XMLHttpRequest();
+    xhr.onload = function() {
+      var reader = new FileReader();
+      reader.onloadend = function() {
+        callback(reader.result);
+      }
+      reader.readAsDataURL(xhr.response);
+    };
+    xhr.open('GET', url);
+    xhr.responseType = 'blob';
+    xhr.send();
+  }
+
   editingPage() {
     this.checkLogin()
     .then(logged => {
@@ -242,7 +256,11 @@ export default class Controller {
           this.view.editArea.firstChild.srcObject = stream;
           this.stream = stream;
         })
-        .catch(() => {})
+        .catch(() => {
+          this.toDataURL('assets/images/default_image.jpg', function(dataUrl) {
+            this.view.editArea.innerHTML = `<img src="${dataUrl}" alt="Uploaded Image">`;
+          }.bind(this));
+        })
       }
       this.model.getUserImages(this.currentOffset)
       .then(thumbnails => {
@@ -402,7 +420,7 @@ export default class Controller {
           const reader = new FileReader();
           reader.onload = () => {
             this.stopVideo();
-            this.view.editArea.innerHTML = `<img src="${reader.result}" alt="Uploaded Image">`;
+            this.view.editArea.innerHTML = `<img src="${reader.result}" alt="Uploaded Image">`
           }
           reader.readAsDataURL(file);
         }

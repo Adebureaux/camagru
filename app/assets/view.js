@@ -233,19 +233,8 @@ export default class View {
       this.mainContent.append(loginLink);
   }
 
-  editingContainerSizing() {
-    if (window.innerWidth <= 860)
-      this.editing.style.height = 'auto';
-    else
-      this.editing.style.height = `calc(100vh - ${this.headerHeight}px - ${this.footerHeight}px)`;
-  }
-
   createEditing() {
     this.editing = this.createElement('div', 'editing-container');
-    
-    this.editingContainerSizing();
-
-    window.addEventListener('resize', this.editingContainerSizing.bind(this));
     
     this.editingMain = this.createElement('div', 'editing-main');
     this.webcamPreview = this.createElement('div', 'webcam-preview');
