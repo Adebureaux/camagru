@@ -256,10 +256,14 @@ export default class Controller {
           this.view.editArea.firstChild.srcObject = stream;
           this.stream = stream;
         })
-        .catch(() => {
-          this.toDataURL('assets/images/default_image.jpg', function(dataUrl) {
-            this.view.editArea.innerHTML = `<img src="${dataUrl}" alt="Uploaded Image">`;
-          }.bind(this));
+        .catch((error) => {
+          if (logged) {
+            this.toDataURL('assets/images/default_image.jpg', function(dataUrl) {
+              this.view.editArea.innerHTML = `<img src="${dataUrl}" alt="Uploaded Image">`;
+            }.bind(this));
+          }
+          // else
+          //   this.stopVideo();
         })
       }
       this.model.getUserImages(this.currentOffset)
