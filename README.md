@@ -31,7 +31,7 @@ SMTP_SERVER="[your.smtp.com]:port" SMTP_ACCESS="your_mail@email.com:yourPassword
 ## Features
 
 ### Common Features
-- MVC structured application.
+- MVC structured application
 - Page layout (header, main section, footer)
 - Mobile-friendly and responsive design
 - Secure all forms and site features
