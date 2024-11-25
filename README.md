@@ -3,38 +3,21 @@
 ## Project Overview
 Camagru is a web application project. The goal is to create a small web app that allows users to make basic photo and video edits using their webcam and predefined images.
 
-
 ## Version
 4.0
 
-
-## Table of Content
-[Introduction](#introduction)
-[Objectives](#obje)
-General Instructions
-Mandatory Part
-Common Features
-User Features
-Gallery Features
-Editing Features
-Constraints and Mandatory Things
-Bonus Part
-
-
 ## Introduction
-You are now ready to build your first professional web application. The web is a vast and rich world that allows you to quickly release data and content globally. This project will help you learn new concepts such as:
+The web is a vast and rich world that allows you to quickly release data and content globally. This project will help you learn new concepts such as:
+- Responsive design
+- DOM Manipulation
+- SQL Debugging
+- Cross-Site Request Forgery (CSRF)
+- Cross-Origin Resource Sharing (CORS)
 
-
-## Responsive design
-DOM Manipulation
-SQL Debugging
-Cross-Site Request Forgery (CSRF)
-Cross-Origin Resource Sharing (CORS)
-Objectives
+## Objectives
 Create a web application that allows users to perform basic photo and video editing using their webcam and predefined images with alpha channels. Users should be able to select an image, take a picture with their webcam, and combine both images. All captured images should be public, likeable, and commentable.
 
-
-## General Instructions
+### General Instructions
 Your web application must produce no errors or warnings in any console (server-side and client-side).
 You can use any language for the server-side application, but ensure that equivalent functions exist in the PHP standard library.
 Client-side, use HTML, CSS, and JavaScript.
@@ -43,7 +26,6 @@ Secure your application and handle data privacy.
 Use any web server you prefer (e.g., Apache, Nginx).
 Ensure compatibility with Firefox (>= 41) and Chrome (>= 46).
 Note: Store credentials, API keys, and env variables in a .env file and ignore it in git to avoid security issues.
-
 
 ## Mandatory Part
 
@@ -81,7 +63,6 @@ Server-side: Any language (limited to PHP standard library).
 Client-side: HTML, CSS, JavaScript (native browser APIs).
 CSS frameworks are allowed unless they introduce forbidden JavaScript.
 Provide a containerized deployment solution (e.g., docker-compose).
-
 
 ## Bonus Part
 Live preview of edited images.
