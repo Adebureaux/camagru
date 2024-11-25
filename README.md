@@ -18,14 +18,14 @@ This project will use some concepts such as:
 Create a web application that allows users to perform basic photo and video editing using their webcam and predefined images with alpha channels. Users should be able to select an image, take a picture with their webcam, and combine both images. All captured images should be public, likeable, and commentable.
 
 ## General
-The web application produce no errors or warnings in any console (server-side and client-side).
-The server-side application use exclusively PHP standard library.
-Client-side use HTML, CSS, and JavaScript.
-Containerization in Docker.
-The application and handle data privacy.
-Web server used is nginx.
-Compatibility with Firefox (>= 41) and Chrome (>= 46).
-A .env file is necessary to enable the mail system, the file must contains:
+- The web application produce no errors or warnings in any console (server-side and client-side)
+- The server-side application use exclusively PHP standard library
+- Client-side use HTML, CSS, and JavaScript
+- Containerization in Docker
+- The application and handle data privacy
+- Nginx web server
+- Compatibility with Firefox (>= 41) and Chrome (>= 46)
+- A .env file is necessary to enable the mail system, the file must contains:
 SMTP_SERVER="[your.smtp.com]:port" SMTP_ACCESS="your_mail@email.com:yourPassword"
 
 ## Features
