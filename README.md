@@ -1,12 +1,12 @@
 # Camagru
 ## Project Overview
-Camagru is a web application project designed to challenge your web development skills. The goal is to create a small web app that allows users to make basic photo and video edits using their webcam and predefined images.
+Camagru is a web application project. The goal is to create a small web app that allows users to make basic photo and video edits using their webcam and predefined images.
 
 ## Version
 4.0
 
-## Table of Contents
-Introduction
+## Table of Content
+[Link Text](#introduction)
 Objectives
 General Instructions
 Mandatory Part
